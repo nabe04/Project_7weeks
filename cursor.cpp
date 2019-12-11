@@ -12,6 +12,7 @@ CursorPivot  cursorPivot;
 CursorCenter cursorCenter;
 
 Vector2I Cursor_1::cursorCenterPos;
+Vector2I Cursor_2::cursorCenterPos;
 
 void Cursor_1::cursorMoveY(OBJ2D* obj)
 {
@@ -21,7 +22,7 @@ void Cursor_1::cursorMoveY(OBJ2D* obj)
 	int padInput = GetJoypadInputState(DX_INPUT_PAD1);
 
 	//arrNoの保存(入れ替えに使用)
-	Block::saveArryNo.y = Block::arrNo.y;
+	Block_1::saveArryNo.y = Block_1::arrNo.y;
 
 	if (padInput & PAD_INPUT_DOWN)
 	{
@@ -54,7 +55,7 @@ void Cursor_1::cursorMoveY(OBJ2D* obj)
 
 	cursorCenterPos.y = cursorNo.y;
 
-	Block::arrNo.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
+	Block_1::arrNo.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
 }
 
 void Cursor_1::cursorMoveX(OBJ2D* obj)
@@ -70,7 +71,7 @@ void Cursor_1::cursorMoveX(OBJ2D* obj)
 	obj->angle = ToRadian(90);
 
 	//arrNoの保存(入れ替えに使用)
-	Block::saveArryNo.x = Block::arrNo.x;
+	Block_1::saveArryNo.x = Block_1::arrNo.x;
 
 	if (padInput & PAD_INPUT_RIGHT)
 	{
@@ -103,7 +104,7 @@ void Cursor_1::cursorMoveX(OBJ2D* obj)
 
 	cursorCenterPos.x = cursorNo.x;
 
-	Block::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
+	Block_1::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
 }
 
 void CursorH::move(OBJ2D* obj)

@@ -11,11 +11,13 @@
 
 int original[BLOCK_HEIGHT][BLOCK_WIDTH] = {};
 
-Vector2I Block::arrNo		= {};
-Vector2I Block::saveArryNo	= {};
+////--Block 1クラス--////
+
+Vector2I Block_1::arrNo		= {};
+Vector2I Block_1::saveArryNo	= {};
 
 //--初期化処理--//
-void Block::init()
+void Block_1::init()
 {
 	for (int h = 0; h < BLOCK_HEIGHT; h++)
 	{
@@ -33,7 +35,7 @@ void Block::init()
 }
 
 //--更新処理--//
-void Block::update()
+void Block_1::update()
 {
 	blockManage();
 
@@ -72,7 +74,7 @@ void Block::update()
 }
 
 //--描画処理--//
-void Block::draw()
+void Block_1::draw()
 {
 	for (int h = 0; h < BLOCK_HEIGHT; h++)
 	{
@@ -107,7 +109,7 @@ void Block::draw()
 //--ブロック除去処理--//
 
 //全体の管理
-void Block::blockManage()
+void Block_1::blockManage()
 {
 	//Pad入力処理
 	int padInput = GetJoypadInputState(DX_INPUT_PAD1);
@@ -152,7 +154,7 @@ void Block::blockManage()
 
 }
 
-void Block::blockClip(const int width, const int height,int* checkNo, e_Direction direction)
+void Block_1::blockClip(const int width, const int height,int* checkNo, e_Direction direction)
 {
 	//Xが入力されたら
 	if (direction == LEFT)
@@ -221,7 +223,7 @@ void Block::blockClip(const int width, const int height,int* checkNo, e_Directio
 
 //除去できるか判定 (横)  
 // Chipの横、Chipの縦、Chipの要素番号、向き
-bool Block::checkBlockWidth(const int width, const int height, const int checkNo, e_Direction direction)
+bool Block_1::checkBlockWidth(const int width, const int height, const int checkNo, e_Direction direction)
 {
 	//例外チェック
 	if (direction == UP || direction == BOTTOM)
@@ -281,7 +283,7 @@ bool Block::checkBlockWidth(const int width, const int height, const int checkNo
 
 //除去できるか判定 (縦)
 // Chipの横、Chipの縦、Chipの要素番号、向き
-bool Block::checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction)
+bool Block_1::checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction)
 {
 	//例外チェック
 	if (direction == RIGHT || direction == LEFT)
@@ -335,5 +337,243 @@ bool Block::checkBlockHeight(const int width, const int height, const int checkN
 			return false;
 		}
 			
+	}
+}
+
+
+////--Block 2クラス--////
+
+Vector2I Block_2::arrNo;
+Vector2I Block_2::saveArryNo;
+
+//全体の管理
+void Block_2::blockManage()
+{
+	//Pad入力処理
+	int padInput = GetJoypadInputState(DX_INPUT_PAD1);
+
+	//X入力
+	if (padInput & (PAD_INPUT_C | PAD_INPUT_B | PAD_INPUT_A | PAD_INPUT_4))
+	{
+		if (keyTrg && checkBlockWidth(arrNo.x, arrNo.y, platform[arrNo.y][arrNo.x], LEFT) && arrNo.x != 0)
+		{
+			UI::nowCombo++;
+			Game::instance()->uiComboManager()->init();
+			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			blockClip(arrNo.x, arrNo.y, &block[arrNo.y][arrNo.x].no, LEFT);
+		}
+		if (keyTrg && checkBlockWidth(arrNo.x, arrNo.y, platform[arrNo.y][arrNo.x], RIGHT) && arrNo.x != BLOCK_WIDTH - 1)
+		{
+			UI::nowCombo++;
+			Game::instance()->uiComboManager()->init();
+			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			blockClip(arrNo.x, arrNo.y, &block[arrNo.y][arrNo.x].no, RIGHT);
+		}
+		if (keyTrg && checkBlockHeight(arrNo.x, arrNo.y, platform[arrNo.y][arrNo.x], BOTTOM) && arrNo.y != BLOCK_HEIGHT - 1)
+		{
+			UI::nowCombo++;
+			Game::instance()->uiComboManager()->init();
+			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			blockClip(arrNo.x, arrNo.y, &block[arrNo.y][arrNo.x].no, BOTTOM);
+		}
+		if (keyTrg&& checkBlockHeight(arrNo.x, arrNo.y, platform[arrNo.y][arrNo.x], UP) && arrNo.y != 0)
+		{
+			UI::nowCombo++;
+			Game::instance()->uiComboManager()->init();
+			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			blockClip(arrNo.x, arrNo.y, &block[arrNo.y][arrNo.x].no, UP);
+		}
+		keyTrg = false;
+	}
+	else
+	{
+		keyTrg = true;
+	}
+
+}
+
+void Block_2::blockClip(const int width, const int height, int* checkNo, e_Direction direction)
+{
+	//Xが入力されたら
+	if (direction == LEFT)
+	{
+		for (int w = 0; w < width; w++)
+		{
+			switch (block[height][w].state)
+			{
+			case 0:
+				block[height][w].no = GetRand(4);
+				break;
+			}
+		}
+	}
+
+	//Bが入力されたら
+	if (direction == RIGHT)
+	{
+		for (int w = BLOCK_WIDTH - 1; w > width; w--)
+		{
+			switch (block[height][w].state)
+			{
+			case 0:
+				block[height][w].no = GetRand(4);
+				break;
+			}
+		}
+	}
+	//Yが入力されたら
+	if (direction == UP)
+	{
+		for (int h = 0; h < height; h++)
+		{
+			switch (block[h][width].state)
+			{
+			case 0:
+				block[h][width].no = GetRand(4);
+				break;
+			}
+		}
+	}
+
+	//Aが入力されたら
+	if (direction == BOTTOM)
+	{
+		for (int h = BLOCK_HEIGHT - 1; h > height; h--)
+		{
+			switch (block[h][width].state)
+			{
+			case 0:
+				block[h][width].no = GetRand(4);
+				break;
+			}
+		}
+	}
+
+	const int saveNo = *checkNo;
+	while (1)
+	{
+		*checkNo = GetRand(4);
+
+		if (*checkNo != saveNo)	break;
+	}
+
+}
+
+//除去できるか判定 (横)  
+// Chipの横、Chipの縦、Chipの要素番号、向き
+bool Block_2::checkBlockWidth(const int width, const int height, const int checkNo, e_Direction direction)
+{
+	//例外チェック
+	if (direction == UP || direction == BOTTOM)
+	{
+		assert(!"引数 direciton の値が間違っています");
+	}
+
+	int saveNo = -1;
+
+	//Xが入力されたら
+	if (direction == LEFT)
+	{
+		if (width > 1)
+		{
+			for (int w = 0; w < width; w++)
+			{
+				if (w > 0)
+				{
+					if (saveNo != platform[height][w])	return false;
+				}
+
+				saveNo = platform[height][w];
+			}
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
+	//Bが入力されたら
+	if (direction == RIGHT)
+	{
+		if (width < BLOCK_WIDTH - 2)
+		{
+			for (int w = BLOCK_WIDTH - 1; w > width; w--)
+			{
+				if (w < BLOCK_WIDTH - 1)
+				{
+					if (saveNo != platform[height][w])	return false;
+				}
+
+				saveNo = platform[height][w];
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+}
+
+//除去できるか判定 (縦)
+// Chipの横、Chipの縦、Chipの要素番号、向き
+bool Block_2::checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction)
+{
+	//例外チェック
+	if (direction == RIGHT || direction == LEFT)
+	{
+		assert(!"引数 direciton の値が間違っています");
+	}
+
+	int saveNo = -1;
+
+	//Yが入力されたら
+	if (direction == UP)
+	{
+		if (height > 1)
+		{
+			for (int h = 0; h < height; h++)
+			{
+				if (h > 0)
+				{
+					if (saveNo != platform[h][width])	return false;
+				}
+
+				saveNo = platform[h][width];
+			}
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	//Aが入力されたら
+	if (direction == BOTTOM)
+	{
+		if (height < BLOCK_HEIGHT - 2)
+		{
+			for (int h = BLOCK_HEIGHT - 1; h > height; h--)
+			{
+				if (h < BLOCK_HEIGHT - 1)
+				{
+					if (saveNo != platform[h][width])	return false;
+				}
+
+				saveNo = platform[h][width];
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
 	}
 }

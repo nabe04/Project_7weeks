@@ -33,7 +33,7 @@ void Game::init()
 
 	playerManager_  = new PlayerManager;
 	bgManager_		= new BG;
-	blockManager_	= new Block;
+	block1Manager_	= new Block_1;
 	cursorManager_  = new CursorManager;
 	uiTimerManager_	= new UiManager;
 	uiComboManager_ = new UiManager;
@@ -112,7 +112,7 @@ void Game::update()
 			bgManager()->init();
 
 			//Blockマネージャの初期化
-			blockManger()->init();
+			block1Manger()->init();
 
 			//Cursorマネージャの初期化
 			cursorManager()->init();
@@ -144,7 +144,7 @@ void Game::update()
 			playerManager()->update();
 			bgManager()->update();
 			cursorManager()->update();
-			blockManger()->update();
+			block1Manger()->update();
 			uiTimerManager()->update();
 			uiComboManager()->update();
 
@@ -162,7 +162,7 @@ void Game::draw()
 	//プレイヤーの描画
 	//bgManager()->drawBack();
 	//bgManager()->drawTerrain();
-	blockManger()->draw();
+	block1Manger()->draw();
 	cursorManager()->draw();
 	playerManager()->draw();
 	uiTimerManager()->draw();
@@ -174,7 +174,7 @@ void Game::uninit()
 {
 	safe_delete(playerManager_);
 	safe_delete(bgManager_);
-	safe_delete(blockManager_);
+	safe_delete(block1Manager_);
 	safe_delete(cursorManager_);
 	safe_delete(uiTimerManager_);
 

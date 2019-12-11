@@ -20,7 +20,7 @@ private:
 	//メンバ変数は後ろに_をつける
 	PlayerManager*	playerManager_;		//Player
 	BG*				bgManager_;			//BG
-	Block*			blockManager_;		//Block
+	Block_1*		block1Manager_;		//Block
 	CursorManager*  cursorManager_;		//Cursor
 	UiManager*		uiTimerManager_;	//UI Timer
 	UiManager*		uiComboManager_;	//UI Combo
@@ -38,7 +38,7 @@ public:
 	//ゲッターは後ろに_を付けない
 	PlayerManager*	playerManager()		{ return playerManager_; }
 	BG*				bgManager()			{ return bgManager_; }
-	Block*			blockManger()		{ return blockManager_; }
+	Block_1*		block1Manger()		{ return block1Manager_; }
 	CursorManager*	cursorManager()		{ return cursorManager_; }
 	UiManager*		uiTimerManager()	{ return uiTimerManager_; }
 	UiManager*		uiComboManager()	{ return uiComboManager_; }
