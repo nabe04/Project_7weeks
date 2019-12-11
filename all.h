@@ -1,0 +1,12 @@
+#pragma once
+#include "DxLib.h"
+#include "setup.h"
+#include "obj2d.h"
+#include "util.h"
+#include "player.h"
+#include "load_texture.h"
+#include "bg_maps.h"
+#include "bg.h"
+#include "scene.h"
+#include "title.h"
+#include "game.h"
