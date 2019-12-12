@@ -34,7 +34,7 @@ void Cursor::cursorMoveY(OBJ2D* obj)
 		int padInput = GetJoypadInputState(DX_INPUT_PAD1);
 
 		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.y = Block::arrNo.y;
+		Block_1::saveArryNo.y = Block_1::arrNo.y;
 
 		if (padInput & PAD_INPUT_DOWN)
 		{
@@ -67,7 +67,7 @@ void Cursor::cursorMoveY(OBJ2D* obj)
 
 		cursorCenterPos.y = cursorNo.y;
 
-		Block::arrNo.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
+		Block_1::arrNo.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
 	}
 
 	if (Game::playerNum == Scene::TWO_PLAY)
@@ -76,7 +76,7 @@ void Cursor::cursorMoveY(OBJ2D* obj)
 		int padInput = GetJoypadInputState(DX_INPUT_PAD1);
 
 		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.y = Block::arrNo.y;
+		Block_1::saveArryNo.y = Block_1::arrNo.y;
 
 		if (padInput & PAD_INPUT_DOWN)
 		{
@@ -109,7 +109,7 @@ void Cursor::cursorMoveY(OBJ2D* obj)
 
 		cursorCenterPos.y	= cursorNo.y;
 
-		Block::arrNo.y		= obj->arrNo.y;		//Blockを変更する要素番号を取得
+		Block_1::arrNo.y		= obj->arrNo.y;		//Blockを変更する要素番号を取得
 	}
 
 	
@@ -130,7 +130,7 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 		obj->angle = ToRadian(90);
 
 		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.x = Block::arrNo.x;
+		Block_1::saveArryNo.x = Block_1::arrNo.x;
 
 		if (padInput & PAD_INPUT_RIGHT)
 		{
@@ -163,7 +163,7 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 
 		cursorCenterPos.x = cursorNo.x;
 
-		Block::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
+		Block_1::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
 	}
 
 	if (Game::playerNum == Scene::TWO_PLAY)
@@ -176,7 +176,7 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 		obj->angle = ToRadian(90);
 
 		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.x = Block::arrNo.x;
+		Block_1::saveArryNo.x = Block_1::arrNo.x;
 
 		if (padInput & PAD_INPUT_RIGHT)
 		{
@@ -209,7 +209,7 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 
 		cursorCenterPos.x = cursorNo.x;
 
-		Block::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
+		Block_1::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
 	}
 	
 }
@@ -320,48 +320,6 @@ void CursorCenter::move(OBJ2D* obj)
 ////-- 二人プレイ --////
 void Cursor_2::cursorMoveY(OBJ2D* obj)
 {
-	//-- 一人プレイ時 --//
-	if (Game::playerNum == Scene::ONE_PLAY)
-	{
-		//Pad入力処理
-		int padInput_2 = GetJoypadInputState(DX_INPUT_PAD2);
-
-		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.y = Block::arrNo.y;
-
-		if (padInput_2 & PAD_INPUT_DOWN)
-		{
-			if (keyTrg && cursorNo.y < BLOCK_HEIGHT - 1)
-			{
-				keyTrg = false;
-
-				cursorNo.y++;
-
-			}
-		}
-		else if (padInput_2 & PAD_INPUT_UP)
-		{
-			if (keyTrg && cursorNo.y > 0)
-			{
-				keyTrg = false;
-
-				cursorNo.y--;
-			}
-		}
-		else
-		{
-			keyTrg = true;
-		}
-		obj->pos.x = (cursorNo.x * 64) + 475;
-		obj->pos.y = (cursorNo.y * 64) + 150;
-
-		obj->arrNo.x = cursorNo.x;		//要素番号を保存
-		obj->arrNo.y = cursorNo.y;		//要素番号を保存
-
-		cursorCenterPos_2.y = cursorNo.y;
-
-		Block::arrNo.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
-	}
 
 	if (Game::playerNum == Scene::TWO_PLAY)
 	{
@@ -369,7 +327,7 @@ void Cursor_2::cursorMoveY(OBJ2D* obj)
 		int padInput_2 = GetJoypadInputState(DX_INPUT_PAD2);
 
 		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.y = Block::arrNo.y;
+		Block_2::saveArryNo_2.y = Block_2::arrNo_2.y;
 
 		if (padInput_2 & PAD_INPUT_DOWN)
 		{
@@ -402,7 +360,7 @@ void Cursor_2::cursorMoveY(OBJ2D* obj)
 
 		cursorCenterPos_2.y = cursorNo.y;
 
-		Block::arrNo.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
+		Block_2::arrNo_2.y = obj->arrNo.y;		//Blockを変更する要素番号を取得
 	}
 
 
@@ -422,8 +380,8 @@ void Cursor_2::cursorMoveX(OBJ2D* obj)
 
 		obj->angle = ToRadian(90);
 
-		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.x = Block::arrNo.x;
+		//arrNo_2の保存(入れ替えに使用)
+		Block_2::saveArryNo_2.x = Block_2::arrNo_2.x;
 
 		if (padInput_2 & PAD_INPUT_RIGHT)
 		{
@@ -456,7 +414,7 @@ void Cursor_2::cursorMoveX(OBJ2D* obj)
 
 		cursorCenterPos_2.x = cursorNo.x;
 
-		Block::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
+		Block_2::arrNo_2.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
 	}
 
 	if (Game::playerNum == Scene::TWO_PLAY)
@@ -468,8 +426,8 @@ void Cursor_2::cursorMoveX(OBJ2D* obj)
 
 		obj->angle = ToRadian(90);
 
-		//arrNoの保存(入れ替えに使用)
-		Block::saveArryNo.x = Block::arrNo.x;
+		//arrNo_2の保存(入れ替えに使用)
+		Block_2::saveArryNo_2.x = Block_2::arrNo_2.x;
 
 		if (padInput_2 & PAD_INPUT_RIGHT)
 		{
@@ -494,7 +452,7 @@ void Cursor_2::cursorMoveX(OBJ2D* obj)
 			keyTrg = true;
 		}
 
-		obj->pos.x = (cursorNo.x * 64);
+		obj->pos.x = (cursorNo.x * 64) + 100;
 		obj->pos.y = (cursorNo.y * 64) + 277;
 
 		obj->arrNo.x = cursorNo.x;		//要素番号を保存
@@ -502,7 +460,7 @@ void Cursor_2::cursorMoveX(OBJ2D* obj)
 
 		cursorCenterPos_2.x = cursorNo.x;
 
-		Block::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
+		Block_2::arrNo_2.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
 	}
 
 }
@@ -579,7 +537,7 @@ void CursorPivot_2::move(OBJ2D* obj)
 	if (Game::playerNum == Scene::TWO_PLAY)
 	{
 		obj->existFrag = true;
-		obj->pos.x = cursorCenterPos_2.x * 64;
+		obj->pos.x = cursorCenterPos_2.x * 64 + 100;
 		obj->pos.y = cursorCenterPos_2.y * 64 + 150;
 
 		obj->timer++;
