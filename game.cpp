@@ -25,6 +25,7 @@ using namespace n_font;
 
 ////--変数--////
 Game Game::instance_;
+int  Game::playerNum;
 
 ////--初期化処理--////
 void Game::init()
@@ -33,7 +34,7 @@ void Game::init()
 
 	playerManager_  = new PlayerManager;
 	bgManager_		= new BG;
-	block1Manager_	= new Block_1;
+	block1Manager_	= new Block;
 	cursorManager_  = new CursorManager;
 	uiTimerManager_	= new UiManager;
 	uiComboManager_ = new UiManager;
@@ -42,6 +43,8 @@ void Game::init()
 	keyTrg			= false;	//キートリガーの初期化
 
 	UI::nowCombo	= 0;		//staticメンバ変数の初期化
+
+	playerNum		= getSelect();	//プレイヤーの人数取得
 
 	//--ロード--//
 #ifdef DEBUG_TEX
@@ -96,7 +99,65 @@ void Game::update()
 	}
 	if (isPausedFrag)  return;				//ポーズ中ならリターン
 
+	//-- 一人プレイ時 --//
 	if (getSelect() == ONE_PLAY)
+	{
+		switch (state)
+		{
+		case 0:
+			//////初期設定//////
+
+			timer = 0;
+
+			//プレイヤーマネージャの初期化
+			playerManager()->init();
+
+			//BGマネージャの初期化
+			bgManager()->init();
+
+			//Blockマネージャの初期化
+			block1Manger()->init();
+
+			//Cursorマネージャの初期化
+			cursorManager()->init();
+
+			//UI
+			uiTimerManager()->init();
+			uiComboManager()->init();
+
+			//プレイヤー(自分で操作)を追加する (プレイヤー 1)
+			playerManager()->add(&player		, n_texture::storePlayer	, TEXTURE, Vector2F{ 0,0 }		, Vector2F{ 64,64 });
+			cursorManager()->add(&cursorW		, n_texture::sprLine		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorH		, n_texture::sprLine		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorCenter	, n_texture::sprCursorC		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			cursorManager()->add(&cursorPivot	, n_texture::sprCursor		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+
+
+#ifdef DEBUG_
+			uiTimerManager()->add(&uiTimer, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
+
+#endif // DEBUG_
+
+			state++;	//初期化処理の終了
+
+						/*fallthrough*/
+		case 1:
+			/////通常時の処理/////
+
+			timer++;
+
+			playerManager()->update();
+			bgManager()->update();
+			cursorManager()->update();
+			block1Manger()->update();
+			uiTimerManager()->update();
+			uiComboManager()->update();
+
+			break;
+		}
+	}
+
+	if (getSelect() == TWO_PLAY)
 	{
 		switch (state)
 		{
@@ -127,6 +188,12 @@ void Game::update()
 			cursorManager()->add(&cursorH, n_texture::sprLine, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
 			cursorManager()->add(&cursorCenter, n_texture::sprCursorC, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
 			cursorManager()->add(&cursorPivot, n_texture::sprCursor, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+
+			//プレイヤー 2
+			cursorManager()->add(&cuesorW_2, n_texture::sprLine, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorH_2, n_texture::sprLine, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorCenter_2, n_texture::sprCursorC, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			cursorManager()->add(&cursorPivot_2, n_texture::sprCursor, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
 
 #ifdef DEBUG_
 			uiTimerManager()->add(&uiTimer, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 });

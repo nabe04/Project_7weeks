@@ -21,7 +21,7 @@ public:
 	enum e_SelectGame
 	{
 		ONE_PLAY,
-		TOW_PLAY,
+		TWO_PLAY,
 	};
 
 private:

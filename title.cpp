@@ -58,7 +58,7 @@ void Title::update()
 				keyTrg = false;
 				changeScene(Game::instance());
 				if (select == 0)  setSelect(ONE_PLAY);
-				if (select == 1)  setSelect(TOW_PLAY);
+				if (select == 1)  setSelect(TWO_PLAY);
 			}
 		}
 		//‰º
