@@ -7,7 +7,7 @@
 OBJ2D::OBJ2D()
 {
 	scale = Vector2F{1,1};				//スケールが0のとき何も表示されないため
-	color = Color4F{ 255,255,255,255 };	//不透明度が0のとき何も表示されないため
+	color = Color4I{ 255,255,255,255 };	//不透明度が0のとき何も表示されないため
 }
 
 
@@ -73,7 +73,7 @@ void OBJ2D::draw()
 
 			//描画
 			DrawFormatStringToHandle(
-				pos.x, pos.y,
+				static_cast<int>(pos.x), static_cast<int>(pos.y),
 				GetColor(color.r, color.g, color.b),
 				*data,
 				text,
@@ -81,7 +81,7 @@ void OBJ2D::draw()
 				);
 
 			//状態を戻す(この処理をしないと全体に負透明度が影響するため)
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, color.a);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, static_cast<int>(color.a));
 		}
 	}
 }
@@ -105,7 +105,7 @@ OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Ve
 	obj.texSize  = size;
 	obj.size     = { size.x * 0.5f,size.y * 0.5f };		//sizeに引数のsizeの半分を代入(判定などに使うときに使いやすくするため)
 	obj.scale	 = Vector2F{ 1, 1 };					//スケールは等倍
-	obj.color	 = Color4F{ 255,255,255,255 };			//色は原色(不透明度255 = 不透明度Max)
+	obj.color	 = Color4I{ 255,255,255,255 };			//色は原色(不透明度255 = 不透明度Max)
 	obj.data	 = data;								//Data格納
 	obj.category = category;							//種類選別(この種類で描画方法が変わる)
 

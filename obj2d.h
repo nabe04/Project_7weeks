@@ -29,7 +29,7 @@ public:
 	Vector2F	texSize		= {};					//画像のサイズ(DrawRoteGraph3の第3，4引数で使用)
 	Vector2I	arrNo		= {};					//配列の要素番号を保存
 	Vector2B	revFrag		= {};					//画像の反転フラグ
-	Color4F		color		= {};					//描画色
+	Color4I		color		= {};					//描画色
 
 	MoveAlg*	mvAlg		= nullptr;				//移動アルゴリズム
 	EraseAlg*	eraseAlg	= nullptr;				//消去アルゴリズム

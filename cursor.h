@@ -18,9 +18,12 @@ class Cursor :public MoveAlg
 private:
 	bool keyTrg = false;
 
+protected:
+	Vector2F correction			= {};
+
 public:
-			Vector2I cursorNo = {};			//現在のカーソルがある位置
-	 static Vector2F cursorCenterPos;
+			Vector2I cursorNo	= {};		//現在のカーソルがある位置
+	 static Vector2I cursorCenterPos;
 
 public:
 	//カーソル用
@@ -64,10 +67,13 @@ class Cursor_2 :public MoveAlg
 private:
 	bool keyTrg = false;
 
+protected:
+	Vector2F correction = {};
+
 public:
 	Vector2I cursorNo = {};			//現在のカーソルがある位置
 
-	static Vector2F cursorCenterPos_2;  //プレイヤー 2
+	static Vector2I cursorCenterPos_2;  //プレイヤー 2
 
 public:
 	//カーソル用

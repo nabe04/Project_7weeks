@@ -48,8 +48,8 @@ void  BG::draw(int* data, int chipNo[CHIP_HEIGHT][CHIP_WIDTH])
 	{
 		for (int w = 0; w < CHIP_WIDTH; w++)
 		{
-			int posX = pos.x + (w * CHIP_SIZE);			//position X
-			int posY = pos.y + (h * CHIP_SIZE);			//position Y
+			int posX   = static_cast<int>(pos.x) + (w * CHIP_SIZE);			//position X
+			int posY   = static_cast<int>(pos.y) + (h * CHIP_SIZE);			//position Y
 			int hSizeX = static_cast<int>(size.x * 0.5f);	//Harf Size X
 			int hSizeY = static_cast<int>(size.y * 0.5f);	//Harf Size Y
 			int no = chipNo[h][w];

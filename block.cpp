@@ -24,6 +24,8 @@ void Block_1::init()
 {
 	if (Game::playerNum == Scene::ONE_PLAY)
 	{
+		correction = { 350,150 };
+
 		for (int h = 0; h < BLOCK_HEIGHT; h++)
 		{
 			for (int w = 0; w < BLOCK_WIDTH; w++)
@@ -31,8 +33,8 @@ void Block_1::init()
 				platform_1[h][w]			= 0;
 
 				block_1[h][w].no			= GetRand(4);
-				block_1[h][w].pos.x			= static_cast<float>(w * BLOCK_CHIP_SIZE + 350);
-				block_1[h][w].pos.y			= static_cast<float>(h * BLOCK_CHIP_SIZE + 150);
+				block_1[h][w].pos.x			= static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
+				block_1[h][w].pos.y			= static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
 				block_1[h][w].existFrag		= true;
 				block_1[h][w].animeTimer	= block_1[h][w].no;
 			}
@@ -41,6 +43,8 @@ void Block_1::init()
 
 	if (Game::playerNum == Scene::TWO_PLAY)
 	{
+		correction = { 100,150 };
+
 		for (int h = 0; h < BLOCK_HEIGHT; h++)
 		{
 			for (int w = 0; w < BLOCK_WIDTH; w++)
@@ -48,8 +52,8 @@ void Block_1::init()
 				platform_1[h][w] = 0;
 
 				block_1[h][w].no = GetRand(4);
-				block_1[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE);
-				block_1[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + 150);
+				block_1[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
+				block_1[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
 				block_1[h][w].existFrag = true;
 				block_1[h][w].animeTimer = block_1[h][w].no;
 			}
@@ -373,7 +377,8 @@ bool Block_1::checkBlockHeight(const int width, const int height, const int chec
 //--èâä˙âªèàóù--//
 void Block_2::init()
 {
-	
+	correction = { 600,150 };
+
 	for (int h = 0; h < BLOCK_HEIGHT; h++)
 	{
 		for (int w = 0; w < BLOCK_WIDTH; w++)
@@ -381,8 +386,8 @@ void Block_2::init()
 			platform_2[h][w] = 0;
 
 			block_2[h][w].no = GetRand(4);
-			block_2[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE + 450);
-			block_2[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + 150);
+			block_2[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
+			block_2[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
 			block_2[h][w].existFrag = true;
 			block_2[h][w].animeTimer = block_2[h][w].no;
 		}

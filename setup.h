@@ -39,12 +39,12 @@ namespace n_setup
 	};
 
 	//color‚Ì’l‚ğ“ü‚ê‚é\‘¢‘Ì
-	struct Color4F
+	struct Color4I
 	{
-		float r;	//Red
-		float g;	//Green
-		float b;	//Blue
-		float a;	//Alpha
+		int r;	//Red
+		int g;	//Green
+		int b;	//Blue
+		int a;	//Alpha
 	};
 }
 

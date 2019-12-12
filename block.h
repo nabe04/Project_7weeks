@@ -8,6 +8,7 @@
 #define BLOCK_CHIP_NUM		(9)
 #define BLOCK_CHIP_SIZE		(64)
 
+//-- プレイヤー 1 --//
 class Block_1 
 {
 	//struct Data
@@ -18,13 +19,12 @@ class Block_1
 	//	OBJ2D* getBlockData(int x, int y) { return &block[y][x]; }
 	//};
 private:	//--メンバ変数--//
-	//-- 一人目 --//
-	OBJ2D block_1[BLOCK_HEIGHT][BLOCK_WIDTH];				//ブロックのデータ格納
-	int   platform_1[BLOCK_HEIGHT][BLOCK_WIDTH] = {};		//現在のブロックの番号格納用
-	bool  keyTrg_1								= false;	//キートリガー	
+	
+	OBJ2D	 block_1[BLOCK_HEIGHT][BLOCK_WIDTH]		= {};		//ブロックのデータ格納
+	Vector2F correction								= {};		//補正値
+	int		 platform_1[BLOCK_HEIGHT][BLOCK_WIDTH]	= {};		//現在のブロックの番号格納用
+	bool	 keyTrg_1								= false;	//キートリガー	
 
-
-	//Data data[2];
 
 	enum e_Direction
 	{
@@ -63,12 +63,10 @@ class Block_2
 	//};
 private:	//--メンバ変数--//
 
-	OBJ2D block_2[BLOCK_HEIGHT][BLOCK_WIDTH];				//ブロックのデータ格納
-	int   platform_2[BLOCK_HEIGHT][BLOCK_WIDTH] = {};		//現在のブロックの番号格納用
-	bool  keyTrg_2 = false;	//キートリガー	
-
-						
-	//Data data[2];
+	OBJ2D		block_2[BLOCK_HEIGHT][BLOCK_WIDTH]		= {};		//ブロックのデータ格納
+	Vector2F	correction								= {};		//補正値
+	int			platform_2[BLOCK_HEIGHT][BLOCK_WIDTH]	= {};		//現在のブロックの番号格納用
+	bool		keyTrg_2								= false;	//キートリガー	
 
 	enum e_Direction
 	{
