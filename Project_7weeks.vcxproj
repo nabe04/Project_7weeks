@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Data\imgui;./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Data\imgui;./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -125,7 +125,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Data\imgui;./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Data\imgui;./Data\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -164,9 +164,15 @@
     <ClCompile Include="bg_maps.cpp" />
     <ClCompile Include="block.cpp" />
     <ClCompile Include="cursor.cpp" />
+    <ClCompile Include="Data\imgui\imgui.cpp" />
+    <ClCompile Include="Data\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Data\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Data\imgui\imgui_impl_dxlib.cpp" />
+    <ClCompile Include="Data\imgui\imgui_widgets.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="load_texture.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyImgui.cpp" />
     <ClCompile Include="obj2d.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -181,9 +187,17 @@
     <ClInclude Include="bg_maps.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="cursor.h" />
+    <ClInclude Include="Data\imgui\imconfig.h" />
+    <ClInclude Include="Data\imgui\imgui.h" />
+    <ClInclude Include="Data\imgui\imgui_impl_dxlib.h" />
+    <ClInclude Include="Data\imgui\imgui_internal.h" />
+    <ClInclude Include="Data\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Data\imgui\imstb_textedit.h" />
+    <ClInclude Include="Data\imgui\imstb_truetype.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="generic.h" />
     <ClInclude Include="load_texture.h" />
+    <ClInclude Include="MyImgui.h" />
     <ClInclude Include="obj2d.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="scene.h" />

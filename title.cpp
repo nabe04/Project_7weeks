@@ -6,6 +6,9 @@
 //
 //******************************************************************************
 
+#include "imgui.h"
+#include "imgui_impl_dxlib.h"
+
 #include "generic.h"
 #include "obj2d.h"
 #include "player.h"
@@ -47,7 +50,23 @@ void Title::update()
 
 	case 1:
 		//--通常時の処理--//
+#ifdef  USE_IMGUI
+		static bool f_open = true;
+		ImGui::Begin("Test", &f_open);
+		static float foobar = 1.0f;
+		static float foo = 1.0f;
+		ImGui::SliderFloat("testfloat", &foo, -1.0f, 1.0f);
+		ImGui::SliderFloat("testfloat2", &foobar, -1.0f, 1.0f);
+		ImGui::SliderAngle("Angle", &foobar, -1.0f, 1.0f);
+		ImGui::End();
 
+		ImGui::Begin("Test 2", &f_open);
+		ImGui::SliderFloat("testfloat", &foobar, -1.0f, 1.0f);
+		ImGui::SliderAngle("Angle", &foobar, -1.0f, 1.0f);
+		ImGui::End();
+#endif //  USE_IMGUI
+
+	
 		timer++;			//Title全体のタイマー
 
 		//START
@@ -85,6 +104,38 @@ void Title::update()
 		}
 		break;
 	}
+
+#ifdef USE_IMGUI
+	static bool my_tool_active = true;
+	ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	static float my_color[4] = {};
+	// Edit a color (stored as ~4 floats)
+	ImGui::ColorEdit4("Color", my_color);
+
+	// Plot some values
+	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	// Display contents in a scrolling region
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	ImGui::BeginChild("Scrolling");
+	for (int n = 0; n < 50; n++)
+		ImGui::Text("%04d: Some text", n);
+	ImGui::EndChild();
+	ImGui::End();
+#endif // USE_IMGUI
 }
 
 ////--描画処理--////

@@ -9,6 +9,7 @@
 #include "block.h"
 #include "cursor.h"
 #include "ui.h"
+#include "player.h"
 
 //--GameƒNƒ‰ƒX--//
 class Game : public Scene

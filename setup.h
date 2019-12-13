@@ -1,8 +1,11 @@
 #pragma once
 #include <DirectXMath.h>
+#include "imgui.h"
+#include "imgui_impl_dxlib.h"
 
 #define DEBUG_			//文字などのデバックのifdefに使用
 #define DEBUG_TEX		//テクスチャのデバックのifdefに使用
+#define USE_IMGUI		//imgui用ifdef
 
 //*********************************************//
 //		スクリーン設定 & 汎用的変数設定		   //
@@ -57,3 +60,4 @@ namespace n_general_function
 		return time * 60;
 	}
 }
+

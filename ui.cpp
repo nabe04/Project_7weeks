@@ -2,7 +2,10 @@
 #include "util.h"
 #include "obj2d.h"
 #include "algorithm.h"
+#include "MyImgui.h"
 #include "ui.h"
+#include "scene.h"
+#include "game.h"
 
 int UI::nowCombo;
 
@@ -26,8 +29,28 @@ void UI::moveTimer(OBJ2D* obj)
 	case 1:
 		dispTime		= obj->timer / FPS;
 		obj->dispNum	= dispTime;
-		obj->pos.x		= SCREEN_WIDTH - 400;
-		obj->pos.y		= 0;
+
+		if (Game::playerNum == Scene::ONE_PLAY)
+		{
+	#ifdef USE_IMGUI
+			obj->pos.x = SCREEN_WIDTH - 400 + imUiTimer.im_uiTimer.fParam.x;
+			obj->pos.y = 0;
+			obj->color.r = imUiTimer.im_uiTimer.iColor[0];
+			obj->color.g = imUiTimer.im_uiTimer.iColor[1];
+			obj->color.b = imUiTimer.im_uiTimer.iColor[2];
+			obj->color.a = imUiTimer.im_uiTimer.iColor[3];
+	#endif  //USE_IMGUI
+	#ifndef USE_IMGUI
+			obj->pos.x = SCREEN_WIDTH - 400;
+			obj->pos.y = 0;
+	#endif //USE_IMGUI
+		}
+		if (Game::playerNum == Scene::TWO_PLAY)
+		{
+			obj->pos.x = 350;
+			obj->pos.y = 0;
+		}
+
 		obj->timer--;
 		break;
 	}

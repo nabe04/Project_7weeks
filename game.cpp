@@ -15,6 +15,7 @@
 #include "load_texture.h"
 #include "bg.h"
 #include "bg_maps.h"
+#include "MyImgui.h"
 #include "scene.h"
 #include "title.h"
 #include "game.h"
@@ -154,6 +155,11 @@ void Game::update()
 			uiTimerManager()->update();
 			uiComboManager()->update();
 
+			
+	#ifdef USE_IMGUI
+			imUiTimer.changeUiTimer();
+	#endif // USE_IMGUI
+
 			break;
 		}
 	}
@@ -217,10 +223,10 @@ void Game::update()
 			block2Manger()->update();
 			uiTimerManager()->update();
 			uiComboManager()->update();
-
 			break;
 		}
 	}
+
 	
 }
 
