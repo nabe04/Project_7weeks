@@ -25,7 +25,10 @@ private:
 	Block_2*		block2Manager_;		//Block (プレイヤー 2)
 	CursorManager*  cursorManager_;		//Cursor
 	UiManager*		uiTimerManager_;	//UI Timer
-	UiManager*		uiComboManager_;	//UI Combo
+	UiManager*		uiComboManager_1_;	//UI Combo(プレイヤー 1)
+	UiManager*		uiComboManager_2_;	//UI Combo(プレイヤー 2)
+	UiManager*		uiScoreManager_1_;	//UI Score(プレイヤー 1)
+	UiManager*		uiScoreManager_2_;  //UI Score(プレイヤー 2)
 
 	static Game instance_;
 
@@ -45,5 +48,8 @@ public:
 	Block_2*		block2Manger()		{ return block2Manager_; }
 	CursorManager*	cursorManager()		{ return cursorManager_; }
 	UiManager*		uiTimerManager()	{ return uiTimerManager_; }
-	UiManager*		uiComboManager()	{ return uiComboManager_; }
+	UiManager*		uiComboManager_1()	{ return uiComboManager_1_; }
+	UiManager*		uiComboManager_2()	{ return uiComboManager_2_; }
+	UiManager*		uiScoreManager_1()	{ return uiScoreManager_1_; }
+	UiManager*		uiScoreManager_2()	{ return uiScoreManager_2_; }
 };

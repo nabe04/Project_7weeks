@@ -29,17 +29,21 @@ void OBJ2D::draw()
 			//負透明度設定
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, color.a);
 			SetDrawBright(color.r, color.g, color.b);
-
+			
+			int sprData = DerivationGraph(clipOrigin.x, clipOrigin.y, clipSize.x, clipSize.y, data[(animeState * chipWidth) + animeTimer]);
+			
 			//描画
 			DrawRotaGraph3(
 				pos.x, pos.y,
 				texSize.x * 0.5f, texSize.y * 0.5f,
 				scale.x, scale.y,
 				angle,
-				data[(animeState * chipWidth) + animeTimer],
+				sprData,
 				true,
 				revFrag.x
 				);
+
+			DeleteGraph(sprData);
 
 			//状態を戻す(この処理をしないと全体に負透明度が影響するため)
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, color.a);
@@ -71,14 +75,18 @@ void OBJ2D::draw()
 			//負透明度設定
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, color.a);
 
+			int fontData = CreateFontToHandle(loadData, fontSize, fontThick, DX_FONTTYPE_NORMAL);
+
 			//描画
 			DrawFormatStringToHandle(
 				static_cast<int>(pos.x), static_cast<int>(pos.y),
 				GetColor(color.r, color.g, color.b),
-				*data,
+				fontData,
 				text,
 				dispNum
 				);
+
+			DeleteFontToHandle(fontData);
 
 			//状態を戻す(この処理をしないと全体に負透明度が影響するため)
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, static_cast<int>(color.a));
@@ -97,7 +105,7 @@ void OBJ2DManager::init()
 }
 
 //リストへの追加(1:OBJ2D型のメンバポインタ 2:描画用に格納したデータ 3:OBJのposition)
-OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Vector2F& pos, const Vector2F& size)
+OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Vector2F& pos, const Vector2F& size, char* loadData)
 {
 	OBJ2D obj;											//OBJ2Dを宣言する
 	obj.mvAlg	 = mvAlg;								//mvAlgに引数のmvAlgを代入
@@ -108,6 +116,8 @@ OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Ve
 	obj.color	 = Color4I{ 255,255,255,255 };			//色は原色(不透明度255 = 不透明度Max)
 	obj.data	 = data;								//Data格納
 	obj.category = category;							//種類選別(この種類で描画方法が変わる)
+	obj.clipSize = { static_cast<int>(size.x),static_cast<int>(size.y) };					//はじめは全体を切り抜くようにする(全体が表示される)
+	obj.loadData = loadData;
 
 	objList.push_back(obj);								//リストにobjを追加する
 	return &(*objList.rbegin());						//今追加したobjのアドレスを返す(何かで使えるように)

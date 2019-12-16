@@ -33,18 +33,22 @@ void Game::init()
 {
 	Scene::init();			//基底クラスのinitを呼ぶ
 
-	playerManager_  = new PlayerManager;
-	bgManager_		= new BG;
-	block1Manager_	= new Block_1;
-	block2Manager_  = new Block_2;
-	cursorManager_  = new CursorManager;
-	uiTimerManager_	= new UiManager;
-	uiComboManager_ = new UiManager;
+	playerManager_		= new PlayerManager;
+	bgManager_			= new BG;
+	block1Manager_		= new Block_1;
+	block2Manager_		= new Block_2;
+	cursorManager_		= new CursorManager;
+	uiTimerManager_		= new UiManager;
+	uiComboManager_1_	= new UiManager;
+	uiComboManager_2_	= new UiManager;
+	uiScoreManager_1_	= new UiManager;
+	uiScoreManager_2_	= new UiManager;
+
 
 	isPausedFrag	= false;	//ポーズフラグの初期化
 	keyTrg			= false;	//キートリガーの初期化
 
-	UI::nowCombo	= 0;		//staticメンバ変数の初期化
+	UI::nowCombo_1	= 0;		//staticメンバ変数の初期化
 
 	playerNum		= getSelect();	//プレイヤーの人数取得
 
@@ -125,7 +129,8 @@ void Game::update()
 
 			//UI
 			uiTimerManager()->init();
-			uiComboManager()->init();
+			uiComboManager_1()->init();
+			uiScoreManager_1()->init();
 
 			//プレイヤー(自分で操作)を追加する (プレイヤー 1)
 			playerManager()->add(&player		, n_texture::storePlayer	, TEXTURE, Vector2F{ 0,0 }		, Vector2F{ 64,64 });
@@ -136,8 +141,8 @@ void Game::update()
 
 
 #ifdef DEBUG_
-			uiTimerManager()->add(&uiTimer, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
-
+			uiTimerManager()->add(  &uiTimer  , &fontTimer , FONT , Vector2F{ -500,-500 }, Vector2F{ 64,64 });
+			uiScoreManager_1()->add(&uiScore_1, &fontTimer , FONT , Vector2F{ -500,-500 }, Vector2F{ 64,64 });
 #endif // DEBUG_
 
 			state++;	//初期化処理の終了
@@ -153,17 +158,18 @@ void Game::update()
 			cursorManager()->update();
 			block1Manger()->update();
 			uiTimerManager()->update();
-			uiComboManager()->update();
-
+			uiComboManager_1()->update();
+			uiScoreManager_1()->update();
 			
 	#ifdef USE_IMGUI
-			imUiTimer.changeUiTimer();
+			im_Ui.uiPlatform();
 	#endif // USE_IMGUI
 
 			break;
 		}
 	}
 
+	////-- 二人プレイ時 --////
 	if (getSelect() == TWO_PLAY)
 	{
 		switch (state)
@@ -188,7 +194,10 @@ void Game::update()
 
 			//UI
 			uiTimerManager()->init();
-			uiComboManager()->init();
+			uiComboManager_1()->init();
+			uiComboManager_2()->init();
+			uiScoreManager_1()->init();
+			uiScoreManager_2()->init();
 
 			//プレイヤー(自分で操作)を追加する
 			playerManager()->add(&player, n_texture::storePlayer, TEXTURE, Vector2F{ 0,0 }, Vector2F{ 64,64 });
@@ -204,8 +213,9 @@ void Game::update()
 			cursorManager()->add(&cursorPivot_2, n_texture::sprCursor, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
 
 #ifdef DEBUG_
-			uiTimerManager()->add(&uiTimer, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
-
+			uiTimerManager()->add(&uiTimer, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			uiScoreManager_1()->add(&uiScore_1, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			uiScoreManager_2()->add(&uiScore_2, &fontTimer, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 #endif // DEBUG_
 
 			state++;	//初期化処理の終了
@@ -222,7 +232,10 @@ void Game::update()
 			block1Manger()->update();
 			block2Manger()->update();
 			uiTimerManager()->update();
-			uiComboManager()->update();
+			uiComboManager_1()->update();
+			uiComboManager_2()->update();
+			uiScoreManager_1()->update();
+			uiScoreManager_2()->update();
 			break;
 		}
 	}
@@ -240,10 +253,14 @@ void Game::draw()
 	//bgManager()->drawTerrain();
 	block1Manger()->draw();
 	if(playerNum == TWO_PLAY)	block2Manger()->draw();
+
 	cursorManager()->draw();
 	playerManager()->draw();
 	uiTimerManager()->draw();
-	uiComboManager()->draw();
+	uiComboManager_1()->draw();
+	if (playerNum == TWO_PLAY)	uiComboManager_2()->draw();
+	uiScoreManager_1()->draw();
+	if (playerNum == TWO_PLAY)  uiScoreManager_2()->draw();
 }
 
 ////--終了処理--////

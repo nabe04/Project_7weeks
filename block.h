@@ -3,9 +3,9 @@
 #define BLOCK_WIDTH			(5)
 #define BLOCK_HEIGHT		(5)
 
-#define BLOCK_CHIP_W		(9)
-#define BLOCK_CHIP_H		(1)
-#define BLOCK_CHIP_NUM		(9)
+#define BLOCK_CHIP_W		(1)
+#define BLOCK_CHIP_H		(5)
+#define BLOCK_CHIP_NUM		(5)
 #define BLOCK_CHIP_SIZE		(64)
 
 //-- ÉvÉåÉCÉÑÅ[ 1 --//

@@ -67,7 +67,7 @@ void Player::move(OBJ2D* obj)
 		//’Êí
 		playerMove(obj);	//“®‚«‚Ìˆ—
 		fixPos(obj);		//pivot‚ÌXV
-
+		
 		break;
 	}
 

@@ -36,7 +36,7 @@ void Block_1::init()
 				block_1[h][w].pos.x			= static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
 				block_1[h][w].pos.y			= static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
 				block_1[h][w].existFrag		= true;
-				block_1[h][w].animeTimer	= block_1[h][w].no;
+				block_1[h][w].animeState	= block_1[h][w].no;
 			}
 		}
 	}
@@ -55,7 +55,7 @@ void Block_1::init()
 				block_1[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
 				block_1[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
 				block_1[h][w].existFrag = true;
-				block_1[h][w].animeTimer = block_1[h][w].no;
+				block_1[h][w].animeState = block_1[h][w].no;
 			}
 		}
 	}
@@ -66,12 +66,20 @@ void Block_1::update()
 {
 	blockManage();
 
+#ifdef DEBUG_
+	static int size = 0;
+	size++;
+	if (size > 64)	size = 0;
+#endif //DEBUG_
 	for (int h = 0; h < BLOCK_HEIGHT; h++)
 	{
 		for (int w = 0; w < BLOCK_WIDTH; w++)
 		{
 			platform_1[h][w]			= block_1[h][w].no;
-			block_1[h][w].animeTimer	= block_1[h][w].no;
+			block_1[h][w].animeState	= block_1[h][w].no;
+#ifdef DEBUG_
+			block_1[h][w].clipSize		= { size,size };
+#endif //DEBUG_
 		}
 	}
 
@@ -84,8 +92,8 @@ void Block_1::update()
 		block_1[arrNo.y][saveArryNo.x].no			= swap;
 
 		//元の配列の値の変更
-		block_1[arrNo.y][arrNo.x].animeTimer		= block_1[arrNo.y][arrNo.x].no;
-		block_1[arrNo.y][saveArryNo.x].animeTimer	= block_1[arrNo.y][saveArryNo.x].no;
+		block_1[arrNo.y][arrNo.x].animeState		= block_1[arrNo.y][arrNo.x].no;
+		block_1[arrNo.y][saveArryNo.x].animeState	= block_1[arrNo.y][saveArryNo.x].no;
 	}
 	if (arrNo.y != saveArryNo.y)
 	{
@@ -95,8 +103,8 @@ void Block_1::update()
 		block_1[saveArryNo.y][arrNo.x].no			= swap;
 
 		//元の配列の値の変更
-		block_1[arrNo.y][arrNo.x].animeTimer		= block_1[arrNo.y][arrNo.x].no;
-		block_1[saveArryNo.y][arrNo.x].animeTimer	= block_1[saveArryNo.y][arrNo.x].no;
+		block_1[arrNo.y][arrNo.x].animeState		= block_1[arrNo.y][arrNo.x].no;
+		block_1[saveArryNo.y][arrNo.x].animeState	= block_1[saveArryNo.y][arrNo.x].no;
 	}
 
 }
@@ -108,15 +116,19 @@ void Block_1::draw()
 	{
 		for (int w = 0; w < BLOCK_WIDTH; w++)
 		{
+			int sprData = DerivationGraph(block_1[h][w].clipOrigin.x, block_1[h][w].clipOrigin.y, block_1[h][w].clipSize.x, block_1[h][w].clipSize.y, n_texture::sprBlock[(block_1[h][w].animeState * BLOCK_CHIP_W) + block_1[h][w].animeTimer]);
+
 			DrawRotaGraph3(
 				block_1[h][w].pos.x, block_1[h][w].pos.y,
 				BLOCK_CHIP_SIZE / 2, BLOCK_CHIP_SIZE / 2,
 				block_1[h][w].scale.x, block_1[h][w].scale.y,
 				block_1[h][w].angle,
-				n_texture::sprBlock[(block_1[h][w].animeState * BLOCK_CHIP_W) + block_1[h][w].animeTimer],
+				sprData,
 				true,
 				block_1[h][w].revFrag.x,block_1[h][w].revFrag.y
 				);
+
+			DeleteGraph(sprData);
 		}
 	}
 
@@ -147,30 +159,38 @@ void Block_1::blockManage()
 	{
 		if (keyTrg_1 && checkBlockWidth(arrNo.x,arrNo.y,platform_1[arrNo.y][arrNo.x],LEFT) && arrNo.x != 0)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_1++;
+			uiCombo_1.setPlayerNo(0);
+			Game::instance()->uiComboManager_1()->init();
+			if(Game::playerNum == Scene::ONE_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0, 0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			if(Game::playerNum == Scene::TWO_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, LEFT);
 		}
 		if (keyTrg_1 && checkBlockWidth(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], RIGHT) && arrNo.x != BLOCK_WIDTH - 1)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_1++;
+			uiCombo_1.setPlayerNo(0);
+			Game::instance()->uiComboManager_1()->init();
+			if (Game::playerNum == Scene::ONE_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			if (Game::playerNum == Scene::TWO_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, RIGHT);
 		}
 		if (keyTrg_1 && checkBlockHeight(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], BOTTOM) && arrNo.y != BLOCK_HEIGHT - 1)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_1++;
+			uiCombo_1.setPlayerNo(0);
+			Game::instance()->uiComboManager_1()->init();
+			if (Game::playerNum == Scene::ONE_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			if (Game::playerNum == Scene::TWO_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, BOTTOM);
 		}
 		if (keyTrg_1&& checkBlockHeight(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], UP) && arrNo.y != 0)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_1++;
+			uiCombo_1.setPlayerNo(0);
+			Game::instance()->uiComboManager_1()->init();
+			if (Game::playerNum == Scene::ONE_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			if (Game::playerNum == Scene::TWO_PLAY)	Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontTimer, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, UP);
 		}
 		keyTrg_1 = false;
@@ -389,7 +409,7 @@ void Block_2::init()
 			block_2[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
 			block_2[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
 			block_2[h][w].existFrag = true;
-			block_2[h][w].animeTimer = block_2[h][w].no;
+			block_2[h][w].animeState = block_2[h][w].no;
 		}
 	}
 	
@@ -406,7 +426,7 @@ void Block_2::update()
 		for (int w = 0; w < BLOCK_WIDTH; w++)
 		{
 			platform_2[h][w] = block_2[h][w].no;
-			block_2[h][w].animeTimer = block_2[h][w].no;
+			block_2[h][w].animeState = block_2[h][w].no;
 		}
 	}
 
@@ -419,8 +439,8 @@ void Block_2::update()
 		block_2[arrNo_2.y][saveArryNo_2.x].no = swap;
 
 		//元の配列の値の変更
-		block_2[arrNo_2.y][arrNo_2.x].animeTimer = block_2[arrNo_2.y][arrNo_2.x].no;
-		block_2[arrNo_2.y][saveArryNo_2.x].animeTimer = block_2[arrNo_2.y][saveArryNo_2.x].no;
+		block_2[arrNo_2.y][arrNo_2.x].animeState = block_2[arrNo_2.y][arrNo_2.x].no;
+		block_2[arrNo_2.y][saveArryNo_2.x].animeState = block_2[arrNo_2.y][saveArryNo_2.x].no;
 	}
 	if (arrNo_2.y != saveArryNo_2.y)
 	{
@@ -430,8 +450,8 @@ void Block_2::update()
 		block_2[saveArryNo_2.y][arrNo_2.x].no = swap;
 
 		//元の配列の値の変更
-		block_2[arrNo_2.y][arrNo_2.x].animeTimer = block_2[arrNo_2.y][arrNo_2.x].no;
-		block_2[saveArryNo_2.y][arrNo_2.x].animeTimer = block_2[saveArryNo_2.y][arrNo_2.x].no;
+		block_2[arrNo_2.y][arrNo_2.x].animeState = block_2[arrNo_2.y][arrNo_2.x].no;
+		block_2[saveArryNo_2.y][arrNo_2.x].animeState = block_2[saveArryNo_2.y][arrNo_2.x].no;
 	}
 
 }
@@ -482,30 +502,35 @@ void Block_2::blockManage()
 	{
 		if (keyTrg_2 && checkBlockWidth(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], LEFT) && arrNo_2.x != 0)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			//TODO::変更
+			UI::nowCombo_2++;
+			uiCombo_2.setPlayerNo(1);
+			Game::instance()->uiComboManager_2()->init();
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontTimer, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, LEFT);
 		}
 		if (keyTrg_2 && checkBlockWidth(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], RIGHT) && arrNo_2.x != BLOCK_WIDTH - 1)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_2++;
+			uiCombo_2.setPlayerNo(1);
+			Game::instance()->uiComboManager_2()->init();
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontTimer, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, RIGHT);
 		}
 		if (keyTrg_2 && checkBlockHeight(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], BOTTOM) && arrNo_2.y != BLOCK_HEIGHT - 1)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_2++;
+			uiCombo_2.setPlayerNo(1);
+			Game::instance()->uiComboManager_2()->init();
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontTimer, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, BOTTOM);
 		}
 		if (keyTrg_2&& checkBlockHeight(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], UP) && arrNo_2.y != 0)
 		{
-			UI::nowCombo++;
-			Game::instance()->uiComboManager()->init();
-			Game::instance()->uiComboManager()->add(&uiCombo, &n_font::fontTimer, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+			UI::nowCombo_2++;
+			uiCombo_2.setPlayerNo(1);
+			Game::instance()->uiComboManager_2()->init();
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontTimer, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, UP);
 		}
 		keyTrg_2 = false;
