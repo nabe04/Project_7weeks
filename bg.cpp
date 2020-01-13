@@ -4,7 +4,16 @@
 #include "load_texture.h"
 #include "bg.h"
 #include "bg_maps.h"
+#include "scene.h"
+#include "title.h"
+#include "game.h"
 
+
+BG blockFrame_1;		//BrockFrame (Player 1)
+BG blockFrame_2;		//BrockFrame (Player 2)
+BG gaugeFrame_1;		//(Player 1)
+BG gaugeFrame_2;		//(Player 2)
+BG backGaround;
 
 //--初期化--//
 void BG::init()
@@ -20,6 +29,31 @@ void BG::init()
 			terrain[h][w]	= ori_terrain[h][w];
 		} 
 	}
+
+	if (Game::gameMode == Scene::ONE_PLAY)
+	{
+		blockFrame_1.obj.pos.x = 308;
+		blockFrame_1.obj.pos.y = 108;
+		gaugeFrame_1.obj.pos.x = 320;
+		gaugeFrame_1.obj.pos.y = 455;
+	}
+
+	if (Game::gameMode == Scene::TWO_PLAY)
+	{
+		blockFrame_1.obj.pos.x = 58;
+		blockFrame_1.obj.pos.y = 108;
+		gaugeFrame_1.obj.pos.x = 65;
+		gaugeFrame_1.obj.pos.y = 455;
+
+		blockFrame_2.obj.pos.x = 558;
+		blockFrame_2.obj.pos.y = 108;
+		gaugeFrame_2.obj.pos.x = 570;
+		gaugeFrame_2.obj.pos.y = 455;
+	}
+	backGaround.obj.pos.x = 0;
+	backGaround.obj.pos.y = 0;
+	backGaround.size.x = BACK_SIZE_W;
+	backGaround.size.y = BACK_SIZE_H;
 }
 
 //--更新--//
@@ -31,7 +65,13 @@ void BG :: update()
 //--描画(背景)--//
 void BG::drawBack()
 {
-	draw(n_texture::storeBG, back);
+	draw(n_texture::sprBG, &backGaround.obj);
+	//draw(n_texture::storeBG, back);
+	draw(n_texture::sprFrame, &blockFrame_1.obj);
+	if (Game::gameMode == Scene::TWO_PLAY)  draw(n_texture::sprFrame, &blockFrame_2.obj);
+	/*draw(n_texture::sprGaugeFrame, &gaugeFrame_1.obj);
+	if (Game::gameMode == Scene::TWO_PLAY) draw(n_texture::sprGaugeFrame, &gaugeFrame_2.obj);*/
+
 }
 
 //--描画(地形)--//
@@ -40,6 +80,19 @@ void BG::drawTerrain()
 	draw(n_texture::storeTerrain, terrain);
 }
 
+//-- マップチップの描画を考えてない描画関数 --//
+void BG::draw(const int* data , const OBJ2D* obj)
+{
+	DrawRotaGraph3(
+		static_cast<int>(obj->pos.x),static_cast<int>(obj->pos.y),
+		static_cast<int>(obj->size.x),static_cast<int>(obj->size.y),
+		obj->scale.x,obj->scale.y,
+		obj->angle,
+		*data,
+		true,
+		obj->revFrag.x
+	);
+}
 
 //--BG、Terrain共通の描画関数--//
 void  BG::draw(int* data, int chipNo[CHIP_HEIGHT][CHIP_WIDTH])

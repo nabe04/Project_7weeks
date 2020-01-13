@@ -9,19 +9,26 @@
 ////--定数--////
 
 //--マップチップ--//
-#define CHIP_WIDTH			(32)
-#define CHIP_HEIGHT			(17)
-#define CHIP_SIZE			(32)
+#define CHIP_WIDTH			(32)		//使ったらだめ
+#define CHIP_HEIGHT			(17)		//使ったらだめ
+#define CHIP_SIZE			(32)		//使ったらだめ
 
 //--BG--//
-#define BG_CHIP_NUM			(16)
-#define BG_CHIP_W			(8)
-#define BG_CHIP_H			(2)
+#define BG_CHIP_NUM			(16)		//使ったらだめ
+#define BG_CHIP_W			(8)			//使ったらだめ
+#define BG_CHIP_H			(2)			//使ったらだめ
+
+//--BACK--//
+#define BACK_SIZE_W			(960)
+#define BACK_SIZE_H			(540)
 
 //--Terrain--//
 #define TERRAIN_CHIP_NUM	(32)
 #define TERRAIN_CHIP_W		(8)
 #define TERRAIN_CHIP_H		(4)
+
+//-- Frame --//
+#define FRAME_SIZE			(340)
 
 #include "setup.h"
 #include "obj2d.h"
@@ -35,8 +42,11 @@ private:
 	n_setup::Vector2I size  = {};		//大きさ
 	int* data				= nullptr;	//格納するChipデータ
 	
-	int back[CHIP_HEIGHT][CHIP_WIDTH]		= {};	//背景
-	int terrain[CHIP_HEIGHT][CHIP_WIDTH]	= {};	//地形
+	int   back[CHIP_HEIGHT][CHIP_WIDTH]		= {};	//背景
+	int   terrain[CHIP_HEIGHT][CHIP_WIDTH]	= {};	//地形
+
+public:
+	OBJ2D obj;
 
 public:
 	//地形(Terrain)の属性
@@ -54,7 +64,6 @@ public:
 
 //--メンバ関数--//
 private:
-	void draw(int* data, int chipNo[CHIP_HEIGHT][CHIP_WIDTH]);	// BG、Terrain共通の描画関数
 
 	//--当たり判定--//
 	bool isHitDown(const float x, const float y, bool hashigo);	//下方向
@@ -68,6 +77,10 @@ public:
 	void update();			//更新
 	void drawBack();		//描画(背景)
 	void drawTerrain();		//描画(地形)
+
+	//-- 描画 --//
+	void draw(const int* data, const OBJ2D* obj);
+	void draw(int* data, int chipNo[CHIP_HEIGHT][CHIP_WIDTH]);	// BG、Terrain共通の描画関数
 
 	//--当たり判定--//
 	//下方向
@@ -97,3 +110,9 @@ public:
 	//--抵抗--//
 	float calcResistance(const OBJ2D* obj, float speed);
 };
+
+extern BG blockFrame_1;		//BrockFrame (Player 1)
+extern BG blockFrame_2;		//BrockFrame (Player 2)
+extern BG gaugeFrame_1;		//(Player 1)
+extern BG gaugeFrame_2;		//(Player 2)
+extern BG backGaround;

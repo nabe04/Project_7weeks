@@ -42,7 +42,7 @@ void OBJ2D::draw()
 				true,
 				revFrag.x
 				);
-
+			
 			DeleteGraph(sprData);
 
 			//状態を戻す(この処理をしないと全体に負透明度が影響するため)
@@ -94,6 +94,74 @@ void OBJ2D::draw()
 	}
 }
 
+void OBJ2D::reset()
+{
+	pos			= {};					//位置
+	savePos		= {};
+	pivot		= {};					//画像の基準点
+	scale		= {1,1};					//スケール
+	size		= {};					//当たり用サイズ(画像の半分のサイズを設定)
+	texSize		= {};					//画像のサイズ(DrawRoteGraph3の第3，4引数で使用)
+	arrNo		= {};					//配列の要素番号を保存
+	clipOrigin	= {};					//画像の切り抜き(基準点)
+	clipSize	= {};					//画像の切り抜きサイズ
+	revFrag		= {};					//画像の反転フラグ
+	color		= {255,255,255,255};					//描画色
+
+	mvAlg		= nullptr;				//移動アルゴリズム
+	eraseAlg	= nullptr;				//消去アルゴリズム
+
+	category;
+
+	state		= 0;					//ステイト
+	timer		= 0;					//タイマー
+	animeState	= 0;					//アニメーションState
+	animeTimer	= 0;					//アニメーションTimer
+	chipWidth	= 0;					//アニメーションさせたいChipの数(横)
+	no			= 0;					//番号(情報を入れるのとかに使用)
+	jumpTimer	= 0;					//長押しジャンプの時間
+	fontSize	= 0;					//フォントの大きさ
+	fontThick	= 0;					//フォントの厚さ
+	score		= 0;					//スコア
+	data		= nullptr;				//描画するさいに入れるData
+	speed		= 0;					//速度
+	gravity		= 0;					//重力
+	angle		= 0;					//角度
+	dispNum		= 0;					//フォーマット指定子格納用
+	existFrag	= false;				//存在フラグ
+	grandFrag	= false;				//地面フラグ
+	ladderFrag	= false;				//梯子フラグ
+	wallFrag	= false;				//壁フラグ
+	clipFrag	= false;				//切り抜きフラグ
+	moveFrag	= false;
+	copyFrag	= false;
+	text		= nullptr;				//フォント使用の際に表示する文字
+	loadData	= nullptr;				//loadしたときのファイル参照値
+}
+
+void OBJ2D:: serchSet(OBJ2D* obj, Vector2F pos, Vector2F size, int no)
+{
+	obj->reset();
+
+	obj->pos		= pos;								//Position
+	obj->size		= { size.x / 2,size.y / 2 };		//判定用サイズ
+	obj->texSize	= size;								//テクスチャ本来のサイズ
+	obj->no			= no;								//番号
+	obj->existFrag	= true;								//存在フラグ
+}
+
+void OBJ2D::setMoveFrag(OBJ2D* obj, bool moveFrag)
+{
+	if (obj->existFrag)
+	{
+		obj->moveFrag = moveFrag;
+	}
+}
+
+void moveOBJData(OBJ2D* origin, OBJ2D* copy)
+{
+	*origin = *copy;
+}
 
 //--OBJ2DManagerクラス--//
 
@@ -105,19 +173,22 @@ void OBJ2DManager::init()
 }
 
 //リストへの追加(1:OBJ2D型のメンバポインタ 2:描画用に格納したデータ 3:OBJのposition)
-OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Vector2F& pos, const Vector2F& size, char* loadData)
+OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Vector2F& pos, const Vector2F& size, char* loadData, float maxVal, bool turnFrag, e_Direction direction)
 {
-	OBJ2D obj;											//OBJ2Dを宣言する
-	obj.mvAlg	 = mvAlg;								//mvAlgに引数のmvAlgを代入
-	obj.pos		 = pos;									//posに引数のposを代入
-	obj.texSize  = size;
-	obj.size     = { size.x * 0.5f,size.y * 0.5f };		//sizeに引数のsizeの半分を代入(判定などに使うときに使いやすくするため)
-	obj.scale	 = Vector2F{ 1, 1 };					//スケールは等倍
-	obj.color	 = Color4I{ 255,255,255,255 };			//色は原色(不透明度255 = 不透明度Max)
-	obj.data	 = data;								//Data格納
-	obj.category = category;							//種類選別(この種類で描画方法が変わる)
-	obj.clipSize = { static_cast<int>(size.x),static_cast<int>(size.y) };					//はじめは全体を切り抜くようにする(全体が表示される)
-	obj.loadData = loadData;
+	OBJ2D obj;								//OBJ2Dを宣言する
+	obj.mvAlg		= mvAlg;																	//mvAlgに引数のmvAlgを代入
+	obj.pos			= pos;																		//posに引数のposを代入
+	obj.texSize		= size;
+	obj.size		= { size.x * 0.5f,size.y * 0.5f };											//sizeに引数のsizeの半分を代入(判定などに使うときに使いやすくするため)
+	obj.scale		= Vector2F{ 1, 1 };															//スケールは等倍
+	obj.color		= Color4I{ 255,255,255,255 };												//色は原色(不透明度255 = 不透明度Max)
+	obj.data		= data;																		//Data格納
+	obj.category	= category;																	//種類選別(この種類で描画方法が変わる)
+	obj.clipSize	= { static_cast<int>(size.x),static_cast<int>(size.y) };					//はじめは全体を切り抜くようにする(全体が表示される)
+	obj.loadData	= loadData;																	//画像のパス
+	obj.maxVal		= maxVal;																	//最大値(なにかでできるように)
+	obj.revFrag.x	= turnFrag;																	//画像の反転フラグ
+	obj.direction	= direction;
 
 	objList.push_back(obj);								//リストにobjを追加する
 	return &(*objList.rbegin());						//今追加したobjのアドレスを返す(何かで使えるように)
@@ -155,6 +226,7 @@ void OBJ2DManager::draw()
 		it.draw();					//itのdrawメソッドを呼ぶ
 	}
 }
+
 
 //デストラクタ
 OBJ2DManager::~OBJ2DManager()

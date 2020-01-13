@@ -8,6 +8,7 @@ using namespace n_setup;
 
 	struct GuiParam
 	{
+		 int	  no;
 		 Vector2F fParam;
 		 Vector2I iParam;
 		 float	  size;
@@ -19,14 +20,18 @@ using namespace n_setup;
 	{
 	public:
 		static bool im_uiOpen;
-		GuiParam im_uiTimer = {};
-		GuiParam im_uiScore = {};
+		static bool im_cursorOpen;
+		GuiParam im_uiTimer		= {};
+		GuiParam im_uiScore_1	= {1};
+		GuiParam im_uiScore_2	= {2};
+		GuiParam im_cursor		= {};
 		
 	public:
 		void changeUiTimer();
 		void changeUiScore();
-		void chageColor(GuiParam* param);
+		void changeColor(GuiParam* param);
 		void uiPlatform();
+		void cursorPlatform();
 	};
 
 	extern MyImgui im_Ui;

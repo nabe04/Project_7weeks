@@ -176,7 +176,10 @@
     <ClCompile Include="MyImgui.cpp" />
     <ClCompile Include="obj2d.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="press.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="scene_result.cpp" />
+    <ClCompile Include="scene_transition.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
@@ -202,7 +205,10 @@
     <ClInclude Include="MyImgui.h" />
     <ClInclude Include="obj2d.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="press.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="scene_result.h" />
+    <ClInclude Include="scene_transition.h" />
     <ClInclude Include="setup.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="ui.h" />

@@ -4,7 +4,8 @@
 #ifdef USE_IMGUI
 	
 	bool MyImgui::im_uiOpen = true;
-		
+	bool MyImgui::im_cursorOpen = true;
+
 	MyImgui im_Ui;
 
 	void MyImgui::changeUiTimer()
@@ -14,7 +15,7 @@
 			ImGui::SliderFloat("Timer_x", &im_uiTimer.fParam.x, 0.0f, SCREEN_WIDTH);
 			ImGui::SliderFloat("Timer_y", &im_uiTimer.fParam.y, 0.0f, SCREEN_HEIGHT);
 
-			chageColor(&im_uiTimer);
+			changeColor(&im_uiTimer);
 
 			ImGui::TreePop();
 		}	
@@ -22,19 +23,30 @@
 
 	void MyImgui::changeUiScore()
 	{
-		if (ImGui::TreeNode("Score"))
+		if (ImGui::TreeNode("Score_1"))
 		{
-			ImGui::SliderFloat("Score_x", &im_uiScore.fParam.x, 0.0f, SCREEN_WIDTH);
-			ImGui::SliderFloat("Score_y", &im_uiScore.fParam.y, 0.0f, SCREEN_HEIGHT);
-			ImGui::SliderFloat("Size", &im_uiScore.size, 0.0f, 200.0f);
-			ImGui::SliderFloat("Thick", &im_uiScore.thick, 0.0f, 50.0f);
-			chageColor(&im_uiScore);
+			ImGui::SliderFloat("Score_x",&im_uiScore_1.fParam.x, 0.0f, SCREEN_WIDTH);
+			ImGui::SliderFloat("Score_y", &im_uiScore_1.fParam.y, 0.0f, SCREEN_HEIGHT);
+			ImGui::SliderFloat("Size", &im_uiScore_1.size, 0.0f, 200.0f);
+			ImGui::SliderFloat("Thick",&im_uiScore_1.thick, 0.0f, 50.0f);
+			changeColor(&im_uiScore_1);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Score_2"))
+		{
+			ImGui::SliderFloat("Score_x", &im_uiScore_2.fParam.x, 0.0f, SCREEN_WIDTH);
+			ImGui::SliderFloat("Score_y", &im_uiScore_2.fParam.y, 0.0f, SCREEN_HEIGHT);
+			ImGui::SliderFloat("Size", &im_uiScore_2.size, 0.0f, 200.0f);
+			ImGui::SliderFloat("Thick", &im_uiScore_2.thick, 0.0f, 50.0f);
+			changeColor(&im_uiScore_2);
 
 			ImGui::TreePop();
 		}
 	}
 
-	void MyImgui::chageColor(GuiParam* param)
+	void MyImgui::changeColor(GuiParam* param)
 	{
 		static bool my_tool_active;
 	
@@ -64,6 +76,18 @@
 
 		changeUiTimer();
 		changeUiScore();
+
+		ImGui::End();
+		ImGui::PopStyleColor();
+	}
+
+	void MyImgui::cursorPlatform()
+	{
+
+		ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.0f, 0.7f, 0.2f, 1.0f));
+		ImGui::Begin("Cursor", &im_cursorOpen);
+
+		changeColor(&im_cursor);
 
 		ImGui::End();
 		ImGui::PopStyleColor();

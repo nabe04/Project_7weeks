@@ -13,6 +13,7 @@
 #include "obj2d.h"
 #include "player.h"
 #include "scene.h"
+#include "scene_transition.h"
 #include "title.h"
 #include "game.h"
 
@@ -75,7 +76,7 @@ void Title::update()
 			if (keyTrg)
 			{
 				keyTrg = false;
-				changeScene(Game::instance());
+				changeScene(Transition::instance());
 				if (select == 0)  setSelect(ONE_PLAY);
 				if (select == 1)  setSelect(TWO_PLAY);
 			}

@@ -113,7 +113,7 @@ extern CursorCenter_2	cursorCenter_2;
 
 class EraseCursor :public EraseAlg
 {
-	void erase(OBJ2D* obj);
+	void erase(OBJ2D* obj) override;
 };
 
 class CursorManager :public OBJ2DManager
