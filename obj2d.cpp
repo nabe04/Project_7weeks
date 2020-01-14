@@ -173,7 +173,7 @@ void OBJ2DManager::init()
 }
 
 //リストへの追加(1:OBJ2D型のメンバポインタ 2:描画用に格納したデータ 3:OBJのposition)
-OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Vector2F& pos, const Vector2F& size, char* loadData, float maxVal, bool turnFrag, e_Direction direction)
+OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg, int clipWidth,int* data, e_Category category, const Vector2F& pos, const Vector2F& size, char* loadData, float maxVal, bool turnFrag, e_Direction direction)
 {
 	OBJ2D obj;								//OBJ2Dを宣言する
 	obj.mvAlg		= mvAlg;																	//mvAlgに引数のmvAlgを代入
@@ -189,6 +189,7 @@ OBJ2D* OBJ2DManager::add(MoveAlg* mvAlg,int* data, e_Category category, const Ve
 	obj.maxVal		= maxVal;																	//最大値(なにかでできるように)
 	obj.revFrag.x	= turnFrag;																	//画像の反転フラグ
 	obj.direction	= direction;
+	obj.chipWidth	= clipWidth;
 
 	objList.push_back(obj);								//リストにobjを追加する
 	return &(*objList.rbegin());						//今追加したobjのアドレスを返す(何かで使えるように)

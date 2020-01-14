@@ -78,7 +78,7 @@ void Player::move(OBJ2D* obj)
 		{
 			key_trg = false;
 
-			Game::instance()->playerManager()->add(&player, n_texture::storePlayer,TEXTURE, Vector2F{ 100,100 }, Vector2F{64,64});
+			Game::instance()->playerManager()->add(&player, NO_ANIMATION, n_texture::storePlayer,TEXTURE, Vector2F{ 100,100 }, Vector2F{64,64});
 		}
 	}
 	else if (key[KEY_INPUT_DOWN] && key[KEY_INPUT_RETURN])

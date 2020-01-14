@@ -69,8 +69,8 @@ void UI::moveTimer(OBJ2D* obj,Vector2F pos)
 	#endif  //USE_IMGUI
 
 	#ifndef USE_IMGUI
-			obj->pos.x   = SCREEN_WIDTH - 400;
-			obj->pos.y   = 0;
+			/*obj->pos.x   = SCREEN_WIDTH - 400;
+			obj->pos.y   = 0;*/
 	#endif //USE_IMGUI
 		}
 		if (Game::gameMode == Scene::TWO_PLAY)
@@ -318,23 +318,22 @@ void UI::moveScore(OBJ2D* obj)
 			//操作しているプレイヤーのNo
 			if (playerNo == Scene::ONE_PLAY)
 			{
-
 #ifdef USE_IMGUI //imgui使用時
-				obj->pos.x = 396 + im_Ui.im_uiScore_1.fParam.x;
-				obj->pos.y = 122 + im_Ui.im_uiScore_1.fParam.y;
-				obj->color.r = static_cast<int>(im_Ui.im_uiScore_1.iColor[0]);
-				obj->color.g = static_cast<int>(im_Ui.im_uiScore_1.iColor[1]);
-				obj->color.b = static_cast<int>(im_Ui.im_uiScore_1.iColor[2]);
-				obj->color.a = static_cast<int>(im_Ui.im_uiScore_1.iColor[3]);
-				obj->fontSize = 25 + static_cast<int>(im_Ui.im_uiScore_1.size);
-				obj->fontThick = 8 + static_cast<int>(im_Ui.im_uiScore_1.thick);
+				obj->pos.x		= 396 + im_Ui.im_uiScore_1.fParam.x;
+				obj->pos.y		= 122 + im_Ui.im_uiScore_1.fParam.y;
+				obj->color.r	= static_cast<int>(im_Ui.im_uiScore_1.iColor[0]);
+				obj->color.g	= static_cast<int>(im_Ui.im_uiScore_1.iColor[1]);
+				obj->color.b	= static_cast<int>(im_Ui.im_uiScore_1.iColor[2]);
+				obj->color.a	= static_cast<int>(im_Ui.im_uiScore_1.iColor[3]);
+				obj->fontSize	= 25 + static_cast<int>(im_Ui.im_uiScore_1.size);
+				obj->fontThick	= 8 + static_cast<int>(im_Ui.im_uiScore_1.thick);
 #endif  //USE_IMGUI
 
 #ifndef USE_IMGUI
-				obj->pos.x = 396;
-				obj->pos.y = 122;
-				obj->fontSize = 25;
-				obj->fontThick = 8;
+				obj->pos.x		= 396;
+				obj->pos.y		= 122;
+				obj->fontSize	= 25;
+				obj->fontThick	= 8;
 #endif // !USE_IMGUI
 
 			}
@@ -342,13 +341,13 @@ void UI::moveScore(OBJ2D* obj)
 			if (playerNo == Scene::TWO_PLAY)
 			{
 #ifdef USE_IMGUI //imgui使用時
-				obj->pos.x = 396 + im_Ui.im_uiScore_2.fParam.x;
-				obj->pos.y = 360 + im_Ui.im_uiScore_2.fParam.y;
-				obj->color.r = static_cast<int>(im_Ui.im_uiScore_2.iColor[0]);
-				obj->color.g = static_cast<int>(im_Ui.im_uiScore_2.iColor[1]);
-				obj->color.b = static_cast<int>(im_Ui.im_uiScore_2.iColor[2]);
-				obj->color.a = static_cast<int>(im_Ui.im_uiScore_2.iColor[3]);
-				obj->fontSize = 25 + static_cast<int>(im_Ui.im_uiScore_2.size);
+				obj->pos.x		= 396 + im_Ui.im_uiScore_2.fParam.x;
+				obj->pos.y		= 360 + im_Ui.im_uiScore_2.fParam.y;
+				obj->color.r	= static_cast<int>(im_Ui.im_uiScore_2.iColor[0]);
+				obj->color.g	= static_cast<int>(im_Ui.im_uiScore_2.iColor[1]);
+				obj->color.b	= static_cast<int>(im_Ui.im_uiScore_2.iColor[2]);
+				obj->color.a	= static_cast<int>(im_Ui.im_uiScore_2.iColor[3]);
+				obj->fontSize	= 25 + static_cast<int>(im_Ui.im_uiScore_2.size);
 				obj->fontThick = 8 + static_cast<int>(im_Ui.im_uiScore_2.thick);
 #endif  //USE_IMGUI
 
@@ -397,17 +396,24 @@ void UI::moveGauge(OBJ2D* obj)
 			}
 		}
 
-		addGauge = 0;
-		feverCount = 0;
+		addGauge	= 0;
+		feverCount	= 0;
 		adjustGauge = 0;
 
-		obj->timer = 0;
+		obj->timer		= 0;
 		obj->clipSize.x = 0;
 		obj->clipSize.y = 100;
 		obj->state++;
 	case 1:
+		//-- ゲージたまり中 --//
+
 		obj->clipOrigin.x = 0;
 		obj->clipOrigin.y = 0;
+
+		//アニメーション処理
+		obj->animeState = 1;
+		obj->animeTimer = obj->timer / 5 % 4;
+		obj->timer++;
 
 		adjustGauge = (3 * feverCount);
 
@@ -421,14 +427,19 @@ void UI::moveGauge(OBJ2D* obj)
 		if (obj->clipSize.x > 320)
 		{
 			obj->clipSize.x = 320;
-			addGauge = 0;
+			obj->timer		= 0;
+			addGauge		= 0;
 			feverCount++;
 			obj->state++;
 		}
+		
 		break;
 	case 2:
-
+		//-- フィーバー中 --//
 		addGauge = 0;
+		obj->animeState = 0;
+		obj->animeTimer = 0;
+
 		obj->timer++;
 		if (obj->timer % 20 == 0)
 		{
@@ -557,7 +568,7 @@ void UiCounter::update()
 			//-- 一列ブロックが消えると下に動く処理 --//
 			if (counter[h][w].moveFrag)
 			{
-				counter[h][w].gravity += 0.05f;
+				counter[h][w].gravity += 0.025f;
 				counter[h][w].pos.y += counter[h][w].gravity;
 
 				//-- 一定のpos以上いけば止まる --//
@@ -567,6 +578,22 @@ void UiCounter::update()
 					counter[h][w].gravity  = 0;
 					counter[h][w].moveFrag = false;
 					counter[h][w].copyFrag = true;
+				}
+			}
+		}
+	}
+
+	for (int h = 1; h < COUNTER_MAX_H; h++)
+	{
+		for (int w = 0; w < COUNTER_MAX_W; w++)
+		{
+			if (counter[h][w].existFrag)
+			{
+				counter[h][w].pos.y		= counter[h - 1][0].pos.y - COUNTER_BLOCK_SPACE;
+
+				if (counter[h - 1][0].moveFrag)
+				{
+					counter[h][w].moveFrag = true;
 				}
 			}
 		}
@@ -589,6 +616,7 @@ void UiCounter::update()
 				{
 					counter[h][w].copyFrag = false;
 					moveOBJData(&counter[h - 1][w], &counter[h][w]);
+					counter[h][w].reset();
 					eraseFrag = true;
 				}
 			}
@@ -610,7 +638,7 @@ void UiCounter::update()
 
 		for (int w = 0; w < COUNTER_MAX_W; w++)
 		{
-			counter[maxHeight][w].reset();
+			//counter[maxHeight][w].reset();
 		}
 	}
 }
@@ -681,7 +709,7 @@ void UiCounter::calcCounterBlockNum(UiCounter* counter, int posX, int height, bo
 
 	for (int w = 0; w < counter->arrNo_W; w++)
 	{
-		 counter->counter[height][w].serchSet(&counter->counter[height][w], { static_cast<float>(posX + w * 32) ,static_cast<float>(-(height * COUNTER_BLOCK_SPACE) + 80)}, { COUNTER_BLOCK_CHIP_SIZE_W ,COUNTER_BLOCK_CHIP_SIZE_H }, w);
+		counter->counter[height][w].serchSet(&counter->counter[height][w], { static_cast<float>(posX + w * 32) ,static_cast<float>(-(height * COUNTER_BLOCK_SPACE) + 80) }, { COUNTER_BLOCK_CHIP_SIZE_W ,COUNTER_BLOCK_CHIP_SIZE_H }, w);
 	}
 }
 

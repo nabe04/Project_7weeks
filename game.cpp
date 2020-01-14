@@ -169,16 +169,16 @@ void Game::update()
 			pressEffectManager()->init();
 
 			//プレイヤー(自分で操作)を追加する (プレイヤー 1)
-			playerManager()->add(&player		, n_texture::storePlayer	, TEXTURE, Vector2F{ 0,0 }		, Vector2F{ 64,64 });
-			cursorManager()->add(&cursorW		, n_texture::sprLine		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
-			cursorManager()->add(&cursorH		, n_texture::sprLine		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
-			cursorManager()->add(&cursorCenter	, n_texture::sprCursorC		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
-			cursorManager()->add(&cursorPivot	, n_texture::sprCursor		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			playerManager()->add(&player	  , NO_ANIMATION , n_texture::storePlayer	, TEXTURE, Vector2F{ 0,0 }		, Vector2F{ 64,64 });
+			cursorManager()->add(&cursorW	  , CURSOR_CHIP_W, n_texture::sprLine		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorH	  , CURSOR_CHIP_W, n_texture::sprLine		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorCenter, CURSOR_CHIP_W, n_texture::sprCursorC	, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			cursorManager()->add(&cursorPivot , CURSOR_CHIP_W, n_texture::sprCursor		, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
 
 			//UI
-			uiTimerManager_1()->add(	&uiTimer_1	, &fontYomogi		, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
-			uiScoreManager_1()->add(&uiScore_1	, &fontYomogi		, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
-			uiGaugeManager_1()->add(&uiGauge_1  ,n_texture::sprGauge, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
+			uiTimerManager_1()->add(&uiTimer_1, NO_ANIMATION, &fontYomogi		, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
+			uiScoreManager_1()->add(&uiScore_1, NO_ANIMATION, &fontYomogi		, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
+			uiGaugeManager_1()->add(&uiGauge_1, UI_CHIP_W   ,n_texture::sprGauge, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
 
 			state++;	//初期化処理の終了
 
@@ -254,25 +254,25 @@ void Game::update()
 			pressEffectManager()->init();
 
 			//プレイヤー(自分で操作)を追加する
-			playerManager()->add(&player		, n_texture::storePlayer, TEXTURE	, Vector2F{ 0,0 }		, Vector2F{ 64,64 });
-			cursorManager()->add(&cursorW		, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
-			cursorManager()->add(&cursorH		, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
-			cursorManager()->add(&cursorCenter	, n_texture::sprCursorC	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
-			cursorManager()->add(&cursorPivot	, n_texture::sprCursor	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			playerManager()->add(&player		,  NO_ANIMATION, n_texture::storePlayer, TEXTURE	, Vector2F{ 0,0 }		, Vector2F{ 64,64 });
+			cursorManager()->add(&cursorW		, CURSOR_CHIP_W, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorH		, CURSOR_CHIP_W,n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorCenter	, CURSOR_CHIP_W, n_texture::sprCursorC	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			cursorManager()->add(&cursorPivot	, CURSOR_CHIP_W, n_texture::sprCursor	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
 
 			//プレイヤー 2
-			cursorManager()->add(&cuesorW_2		, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
-			cursorManager()->add(&cursorH_2		, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
-			cursorManager()->add(&cursorCenter_2, n_texture::sprCursorC	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
-			cursorManager()->add(&cursorPivot_2	, n_texture::sprCursor	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			cursorManager()->add(&cuesorW_2		, CURSOR_CHIP_W, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorH_2		, CURSOR_CHIP_W, n_texture::sprLine	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+			cursorManager()->add(&cursorCenter_2, CURSOR_CHIP_W, n_texture::sprCursorC	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+			cursorManager()->add(&cursorPivot_2	, CURSOR_CHIP_W, n_texture::sprCursor	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
 
 			//UI
-			uiTimerManager_1()->add(&uiTimer_1	, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-			uiTimerManager_2()->add(&uiTimer_2	, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-			uiScoreManager_1()->add(&uiScore_1	, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-			uiScoreManager_2()->add(&uiScore_2	, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-			uiGaugeManager_1()->add(&uiGauge_1	, n_texture::sprGauge	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
-			uiGaugeManager_2()->add(&uiGauge_2	, n_texture::sprGauge	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
+			uiTimerManager_1()->add(&uiTimer_1	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			uiTimerManager_2()->add(&uiTimer_2	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			uiScoreManager_1()->add(&uiScore_1	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			uiScoreManager_2()->add(&uiScore_2	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			uiGaugeManager_1()->add(&uiGauge_1	,    UI_CHIP_W,n_texture::sprGauge	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
+			uiGaugeManager_2()->add(&uiGauge_2	,    UI_CHIP_W,n_texture::sprGauge	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
 
 			state++;	//初期化処理の終了
 						/*fallthrough*/

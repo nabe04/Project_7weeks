@@ -100,7 +100,7 @@ public:
 	void draw();				//•`‰æ
 	
 
-	OBJ2D* add(MoveAlg* mvAlg, int* data, e_Category category, const n_setup::Vector2F& pos = n_setup::Vector2F{ 0, 0 }, const n_setup::Vector2F& size = n_setup::Vector2F{0,0},char* loadName = nullptr,float maxVal = 0,bool turnFrag = false, e_Direction direction = YOKO);	//objList‚ÉV‚½‚ÈOBJ2D‚ğ’Ç‰Á‚·‚é
+	OBJ2D* add(MoveAlg* mvAlg,int clipWidth, int* data, e_Category category, const n_setup::Vector2F& pos = n_setup::Vector2F{ 0, 0 }, const n_setup::Vector2F& size = n_setup::Vector2F{0,0},char* loadName = nullptr,float maxVal = 0,bool turnFrag = false, e_Direction direction = YOKO);	//objList‚ÉV‚½‚ÈOBJ2D‚ğ’Ç‰Á‚·‚é
 	std::list<OBJ2D>* getList() { return &objList; }							//objList‚ğæ“¾‚·‚é
 };
 

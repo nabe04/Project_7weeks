@@ -179,13 +179,13 @@ void Block_1::blockManage()
 			Game::instance()->uiComboManager_1()->init(); //コンボUIの初期化
 			if (Game::gameMode == Scene::ONE_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0, 0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(445), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1,NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0, 0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(445), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
 			}
 			if (Game::gameMode == Scene::TWO_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(195), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(195), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
 				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);	
 				uiCounter_2.calcFrag = true;
 			}
@@ -202,13 +202,13 @@ void Block_1::blockManage()
 
 			if (Game::gameMode == Scene::ONE_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(509), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(509), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
 			}
 			if (Game::gameMode == Scene::TWO_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(262), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(262), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
 				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
 				uiCounter_2.calcFrag = true;
 			}
@@ -225,13 +225,13 @@ void Block_1::blockManage()
 
 			if (Game::gameMode == Scene::ONE_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 349), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 349), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
 			}
 			if (Game::gameMode == Scene::TWO_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 100), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 100), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
 				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
 				uiCounter_2.calcFrag = true;
 			}
@@ -248,13 +248,13 @@ void Block_1::blockManage()
 
 			if (Game::gameMode == Scene::ONE_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 349), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 349), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
 			}
 			if (Game::gameMode == Scene::TWO_PLAY)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 100), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
+				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 100), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
 				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
 				uiCounter_2.calcFrag = true;
 			}
@@ -269,7 +269,7 @@ void Block_1::blockManage()
 		{
 			int counterArrNo_H = 0;	//カウンターブロックの配列格納用変数 (Height)
 
-			//-- カウンターブロックを情報を格納する配列の高さの部分を出す
+			//-- カウンターブロックを情報を格納する配列の高さの部分を出す --//
 			for (int h = 0; h < COUNTER_MAX_H; h++)
 			{
 				if (uiCounter_2.counter[h][0].existFrag)	continue;	//存在しているとき(盤面にブロックがあるとき)は飛ばす
@@ -762,8 +762,8 @@ void Block_2::blockManage()
 			eraseBlockPerOneLoop++;
 
 			Game::instance()->uiComboManager_2()->init();
-			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveL_2, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(700), static_cast<float>((CursorH_2::cursorCenterPos_2.y * 64) + 148) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH_2::cursorCenterPos_2.y * 64) + 148);  //プレス(左から)
-			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveL_2, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(700), static_cast<float>((CursorH_2::cursorCenterPos_2.y * 64) + 148) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH_2::cursorCenterPos_2.y * 64) + 148);  //プレス(左から)
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, LEFT);  //ブロック削除
@@ -775,8 +775,8 @@ void Block_2::blockManage()
 			eraseBlockPerOneLoop++;
 
 			Game::instance()->uiComboManager_2()->init();
-			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveR_2, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(762), static_cast<float>((CursorH_2::cursorCenterPos_2.y * 64) + 148) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH_2::cursorCenterPos_2.y * 64) + 148);  //プレス(右から)
-			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveR_2, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(762), static_cast<float>((CursorH_2::cursorCenterPos_2.y * 64) + 148) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH_2::cursorCenterPos_2.y * 64) + 148);  //プレス(右から)
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, RIGHT);
@@ -788,8 +788,8 @@ void Block_2::blockManage()
 			eraseBlockPerOneLoop++;
 
 			Game::instance()->uiComboManager_2()->init();
-			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveB_2, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH_2::cursorCenterPos_2.x * 64) + 602), static_cast<float>(311) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
-			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveB_2, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH_2::cursorCenterPos_2.x * 64) + 602), static_cast<float>(311) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, BOTTOM);
@@ -801,8 +801,8 @@ void Block_2::blockManage()
 			eraseBlockPerOneLoop++;
 
 			Game::instance()->uiComboManager_2()->init();
-			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveT_2, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW_2::cursorCenterPos_2.x * 64) + 600), static_cast<float>(243) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
-			Game::instance()->uiComboManager_2()->add(&uiCombo_2, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+			Game::instance()->pressMachineManager_2()->add(&pressMachineMoveT_2, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW_2::cursorCenterPos_2.x * 64) + 600), static_cast<float>(243) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
+			Game::instance()->uiComboManager_2()->add(&uiCombo_2, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ SCREEN_WIDTH - 400, 40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, UP);
