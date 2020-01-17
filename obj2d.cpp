@@ -114,7 +114,10 @@ void OBJ2D::reset()
 	category;
 
 	state		= 0;					//ステイト
+	state_2		= 0;					//ステイト(予備)
+	shakeState	= 0;					//スクリーンシェイクステイト
 	timer		= 0;					//タイマー
+	count		= 0;					//カウント
 	animeState	= 0;					//アニメーションState
 	animeTimer	= 0;					//アニメーションTimer
 	chipWidth	= 0;					//アニメーションさせたいChipの数(横)
@@ -133,13 +136,14 @@ void OBJ2D::reset()
 	ladderFrag	= false;				//梯子フラグ
 	wallFrag	= false;				//壁フラグ
 	clipFrag	= false;				//切り抜きフラグ
-	moveFrag	= false;
-	copyFrag	= false;
+	moveFrag	= false;				//動きフラグ
+	copyFrag	= false;				//コピーフラグ
+	shakeFrag	= false;				//スクリーンシェイクフラグ
 	text		= nullptr;				//フォント使用の際に表示する文字
 	loadData	= nullptr;				//loadしたときのファイル参照値
 }
 
-void OBJ2D:: serchSet(OBJ2D* obj, Vector2F pos, Vector2F size, int no)
+void OBJ2D:: serchSet(OBJ2D* obj, Vector2F pos, Vector2F size, int no,const int maxVal)
 {
 	obj->reset();
 
@@ -147,6 +151,7 @@ void OBJ2D:: serchSet(OBJ2D* obj, Vector2F pos, Vector2F size, int no)
 	obj->size		= { size.x / 2,size.y / 2 };		//判定用サイズ
 	obj->texSize	= size;								//テクスチャ本来のサイズ
 	obj->no			= no;								//番号
+	obj->maxVal		= maxVal;							//最大値
 	obj->existFrag	= true;								//存在フラグ
 }
 
@@ -155,6 +160,85 @@ void OBJ2D::setMoveFrag(OBJ2D* obj, bool moveFrag)
 	if (obj->existFrag)
 	{
 		obj->moveFrag = moveFrag;
+	}
+}
+
+void OBJ2D::screenShake(OBJ2D* obj, float shakeValue, e_Direction direction)
+{
+	switch (obj->shakeState)
+	{
+	case 0:
+		//-- 初期設定 --//
+		obj->speed = 0;
+
+		obj->shakeState++;
+		break;
+	case 1:
+		
+		obj->speed += 2;
+		
+		if (direction == TATE)
+		{
+			obj->pos.y += obj->speed;
+
+			if (obj->pos.y > obj->maxVal)
+			{
+				obj->speed = 0;
+				obj->count++;
+				obj->shakeState++;
+			}
+		}
+		if (direction == YOKO)
+		{
+			obj->pos.x += obj->speed;
+
+			if (obj->pos.x > obj->maxVal)
+			{
+				obj->speed = 0;
+				obj->count++;
+				obj->shakeState++;
+			}
+		}
+
+		break;
+	case 2:
+		obj->speed -= 2;
+
+		if (direction == TATE)
+		{
+			obj->pos.y += obj->speed;
+
+			if (obj->pos.y > obj->maxVal)
+			{
+				obj->speed = 0;
+				obj->count++;
+				obj->shakeState = 1;
+			}
+		}
+		if (direction == YOKO)
+		{
+			obj->pos.x += obj->speed;
+
+			if (obj->pos.x > obj->maxVal)
+			{
+				obj->speed = 0;
+				obj->count++;
+				obj->shakeState = 1;
+			}
+		}
+
+		if (obj->count > 6)
+		{
+			obj->shakeState = 3;
+		}
+		break;
+	case 3:
+		obj->shakeState = 0;
+		obj->count		= 0;
+		obj->speed		= 0;
+		obj->shakeFrag	= false;
+		obj->pos		= obj->savePos;
+		break;
 	}
 }
 

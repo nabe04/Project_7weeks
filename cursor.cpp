@@ -7,6 +7,7 @@
 #include "MyImgui.h"
 #include "block.h"
 #include "player.h"
+#include "scene_tutorial.h"
 #include "scene.h"
 #include "game.h"
 
@@ -22,8 +23,8 @@ CursorW_2		cuesorW_2;
 CursorPivot_2	cursorPivot_2;
 CursorCenter_2	cursorCenter_2;
 
-Vector2I Cursor::cursorCenterPos;
-Vector2I Cursor_2::cursorCenterPos_2;
+Vector2I Cursor::cursorCenterPos = { 2,2 };
+Vector2I Cursor_2::cursorCenterPos_2 = { 2,2 };
 
 
 void Cursor::cursorMoveY(OBJ2D* obj)
@@ -37,32 +38,35 @@ void Cursor::cursorMoveY(OBJ2D* obj)
 		//arrNoの保存(入れ替えに使用)
 		Block_1::saveArryNo.y = Block_1::arrNo.y;
 
-		if (padInput & PAD_INPUT_DOWN)
+		if (tutorial.getMoveFrag(&tutorial) || Game::instance()->getTutorialFrag() == false || Tutorial::moveCursorFrag)
 		{
-			if (keyTrg && cursorNo.y < BLOCK_HEIGHT - 1)
+			if (padInput & PAD_INPUT_DOWN)
 			{
-				keyTrg = false;
+				if (keyTrg && cursorNo.y < BLOCK_HEIGHT - 1)
+				{
+					keyTrg = false;
 
-				cursorNo.y++;
+					cursorNo.y++;
 
+				}
 			}
-		}
-		else if (padInput & PAD_INPUT_UP)
-		{
-			if (keyTrg && cursorNo.y > 0)
+			else if (padInput & PAD_INPUT_UP)
 			{
-				keyTrg = false;
+				if (keyTrg && cursorNo.y > 0)
+				{
+					keyTrg = false;
 
-				cursorNo.y--;
+					cursorNo.y--;
+				}
 			}
-		}
-		else
-		{
-			keyTrg = true;
+			else
+			{
+				keyTrg = true;
+			}
 		}
 		obj->pos.x = (cursorNo.x * 64) + correction.x;
 		obj->pos.y = (cursorNo.y * 64) + correction.y;
-		
+
 		obj->arrNo.x = cursorNo.x;		//要素番号を保存
 		obj->arrNo.y = cursorNo.y;		//要素番号を保存
 
@@ -70,7 +74,7 @@ void Cursor::cursorMoveY(OBJ2D* obj)
 
 		Block_1::arrNo.y = obj->arrNo.y;	//Blockを変更する要素番号を取得
 
-		uiTimer_1.setPosY(obj->pos.y - 5);		//タイマーのpos指定
+		uiTimer_1.setPosY(obj->pos.y - 5);		//タイマーのpos指定		
 	}
 
 	//TODO::補正(two)
@@ -137,28 +141,31 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 
 		//arrNoの保存(入れ替えに使用)
 		Block_1::saveArryNo.x = Block_1::arrNo.x;
-	
-		if (padInput & PAD_INPUT_RIGHT)
-		{
-			if (keyTrg && cursorNo.x < BLOCK_WIDTH - 1)
-			{
-				keyTrg = false;
 
-				cursorNo.x++;
-			}
-		}
-		else if (padInput & PAD_INPUT_LEFT)
+		if (tutorial.getMoveFrag(&tutorial) || Game::instance()->getTutorialFrag() == false || Tutorial::moveCursorFrag)
 		{
-			if (keyTrg && cursorNo.x > 0)
+			if (padInput & PAD_INPUT_RIGHT)
 			{
-				keyTrg = false;
+				if (keyTrg && cursorNo.x < BLOCK_WIDTH - 1)
+				{
+					keyTrg = false;
 
-				cursorNo.x--;
+					cursorNo.x++;
+				}
 			}
-		}
-		else
-		{
-			keyTrg = true;
+			else if (padInput & PAD_INPUT_LEFT)
+			{
+				if (keyTrg && cursorNo.x > 0)
+				{
+					keyTrg = false;
+
+					cursorNo.x--;
+				}
+			}
+			else
+			{
+				keyTrg = true;
+			}
 		}
 
 		obj->pos.x = (cursorNo.x * 64) + correction.x;
@@ -172,6 +179,7 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 		Block_1::arrNo.x = obj->arrNo.x;	//Blockを変更する要素番号を取得
 
 		uiTimer_1.setPosX(obj->pos.x - 17);		//タイマーのpos指定
+
 	}
 
 	//TODO::補正値(two)
@@ -209,7 +217,8 @@ void Cursor::cursorMoveX(OBJ2D* obj)
 		{
 			keyTrg = true;
 		}
-
+		
+		
 		obj->pos.x = (cursorNo.x * 64) + correction.x;
 		obj->pos.y = (cursorNo.y * 64) + correction.y;
 
@@ -233,6 +242,8 @@ void CursorH::move(OBJ2D* obj)
 		//TODO::設定
 		if(Game::gameMode == Scene::ONE_PLAY) correction = { 350,277 };
 		if(Game::gameMode == Scene::TWO_PLAY) correction = { 100,277 };
+
+		cursorNo = { 2,0 };
 
 		obj->existFrag = true;
 
@@ -276,6 +287,8 @@ void CursorW::move(OBJ2D* obj)
 		if (Game::gameMode == Scene::ONE_PLAY) correction = { 477,150 };
 		if (Game::gameMode == Scene::TWO_PLAY) correction = { 230,150 };
 
+		cursorNo = { 0,2 };
+
 		obj->existFrag = true;
 
 		obj->state++;
@@ -309,15 +322,18 @@ void CursorPivot::move(OBJ2D* obj)
 {
 	if (Game::gameMode == Scene::ONE_PLAY)
 	{
+	
 		correction = { 350,150 };
 
-		obj->existFrag	= true;
-		obj->pos.x		= cursorCenterPos.x * 64 + correction.x;
-		obj->pos.y		= cursorCenterPos.y * 64 + correction.y;
+		obj->existFrag = true;
+		obj->pos.x = cursorCenterPos.x * 64 + correction.x;
+		obj->pos.y = cursorCenterPos.y * 64 + correction.y;
 
 		obj->timer++;
 		obj->animeTimer = obj->timer / 15 % 4;
 		obj->animeState = 0;
+		
+		
 	}
 	if (Game::gameMode == Scene::TWO_PLAY)
 	{
@@ -343,7 +359,7 @@ void CursorPivot::fixPos(OBJ2D* obj)
 void CursorCenter::move(OBJ2D* obj)
 {
 	if (Game::gameMode == Scene::ONE_PLAY)	  correction  = { 350,150 };
-	if (Game::gameMode == Scene::TWO_PLAY)  correction = { 100,150 };
+	if (Game::gameMode == Scene::TWO_PLAY)    correction = { 100,150 };
 
 	obj->existFrag = true;
 	obj->pos.x = cursorCenterPos.x * 64 + correction.x;
@@ -558,7 +574,6 @@ void CursorCenter_2::move(OBJ2D* obj)
 		obj->color.r = 0;
 	}
 }
-
 
 void CursorCenter_2::fixPos(OBJ2D* obj)
 {

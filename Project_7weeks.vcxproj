@@ -180,6 +180,7 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene_result.cpp" />
     <ClCompile Include="scene_transition.cpp" />
+    <ClCompile Include="scene_tutorial.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
@@ -209,6 +210,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene_result.h" />
     <ClInclude Include="scene_transition.h" />
+    <ClInclude Include="scene_tutorial.h" />
     <ClInclude Include="setup.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="ui.h" />

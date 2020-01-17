@@ -6,7 +6,6 @@
 
 using namespace n_setup;
 
-
 //OBJの種類 
 const enum e_Category
 {
@@ -48,7 +47,10 @@ public:
 	e_Direction direction	= YOKO;
 
 	int			state		= 0;					//ステイト
+	int			state_2		= 0;					//ステイト(予備)
+	int			shakeState	= 0;					//スクリーンシェイクステイト
 	int			timer		= 0;					//タイマー
+	int			count		= 0;					//カウント
 	int			animeState	= 0;					//アニメーションState
 	int			animeTimer	= 0;					//アニメーションTimer
 	int			chipWidth	= 0;					//アニメーションさせたいChipの数(横)
@@ -70,6 +72,7 @@ public:
 	bool		clipFrag	= false;				//切り抜きフラグ
 	bool		moveFrag	= false;				//動きフラグ
 	bool		copyFrag	= false;				//コピーフラグ
+	bool		shakeFrag	= false;				//スクリーンシェイクフラグ
 	char*		text		= nullptr;				//フォント使用の際に表示する文字
 	char*		loadData	= nullptr;				//loadしたときのファイル参照値
 
@@ -80,9 +83,9 @@ public:
 	void draw();	//描画
 	void reset();	//リセット
 
-	void serchSet(OBJ2D* obj, Vector2F pos, Vector2F size, int no);
+	void serchSet(OBJ2D* obj, Vector2F pos, Vector2F size, int no, const int maxVal);
 	void setMoveFrag(OBJ2D* counter, bool moveFrag);
-												
+	void screenShake(OBJ2D* obj, float shakeValue, e_Direction direction);
 };
 
 void moveOBJData(OBJ2D* origin, OBJ2D* copy); //配列データを一つずつずらす
@@ -99,7 +102,6 @@ public:
 	void update();				//更新
 	void draw();				//描画
 	
-
 	OBJ2D* add(MoveAlg* mvAlg,int clipWidth, int* data, e_Category category, const n_setup::Vector2F& pos = n_setup::Vector2F{ 0, 0 }, const n_setup::Vector2F& size = n_setup::Vector2F{0,0},char* loadName = nullptr,float maxVal = 0,bool turnFrag = false, e_Direction direction = YOKO);	//objListに新たなOBJ2Dを追加する
 	std::list<OBJ2D>* getList() { return &objList; }							//objListを取得する
 };

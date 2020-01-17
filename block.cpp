@@ -5,6 +5,7 @@
 #include "load_texture.h"
 #include "actor.h"
 #include "player.h"
+#include "scene_tutorial.h"
 #include "block.h"
 #include "scene.h"
 #include "game.h"
@@ -35,8 +36,15 @@ void Block_1::init()
 				block_1[h][w].no			= GetRand(4);
 				block_1[h][w].pos.x			= static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
 				block_1[h][w].pos.y			= static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
+				block_1[h][w].savePos		= block_1[h][w].pos;
 				block_1[h][w].existFrag		= true;
 				block_1[h][w].animeState	= block_1[h][w].no;
+
+				if (Game::instance()->getTutorialFrag())
+				{
+					block_1[h][w].no = tutorialBoard[h][w];
+				}
+
 			}
 		}
 	}
@@ -49,13 +57,14 @@ void Block_1::init()
 		{
 			for (int w = 0; w < BLOCK_WIDTH; w++)
 			{
-				platform_1[h][w] = 0;
+				platform_1[h][w]			= 0;
 
-				block_1[h][w].no = GetRand(4);
-				block_1[h][w].pos.x = static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
-				block_1[h][w].pos.y = static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
-				block_1[h][w].existFrag = true;
-				block_1[h][w].animeState = block_1[h][w].no;
+				block_1[h][w].no			= GetRand(4);
+				block_1[h][w].pos.x			= static_cast<float>(w * BLOCK_CHIP_SIZE + correction.x);
+				block_1[h][w].pos.y			= static_cast<float>(h * BLOCK_CHIP_SIZE + correction.y);
+				block_1[h][w].savePos		= block_1[h][w].pos;
+				block_1[h][w].existFrag		= true;
+				block_1[h][w].animeState	= block_1[h][w].no;
 			}
 		}
 	}
@@ -81,6 +90,10 @@ void Block_1::update()
 #ifdef DEBUG_
 			block_1[h][w].clipSize		= { size,size };
 #endif //DEBUG_
+			if (block_1[h][w].shakeFrag)
+			{
+				block_1[h][w].screenShake(&block_1[h][w], block_1[h][w].maxVal, block_1[h][w].direction);
+			}
 		}
 	}
 
@@ -166,130 +179,169 @@ void Block_1::blockManage()
 	//Pad入力処理
 	int padInput = GetJoypadInputState(DX_INPUT_PAD1);
 
+	bool		shakeFrag		= false;
+	e_Direction shakeDirection  = TATE;
+
 	//入力
-	if (padInput & (PAD_INPUT_C | PAD_INPUT_B | PAD_INPUT_A | PAD_INPUT_4))
+	if (tutorial.getMoveFrag(&tutorial) || Game::instance()->getTutorialFrag() == false || Tutorial::movePressFrag)
 	{
-		
-		//-- 左から潰すとき --//
-		if (keyTrg_1 && checkBlockWidth(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], LEFT) && arrNo.x != 0)
+		if (padInput & (PAD_INPUT_C | PAD_INPUT_B | PAD_INPUT_A | PAD_INPUT_4))
 		{
-			UI::nowCombo_1++;  //コンボ加算
-			eraseBlockPerOneLoop++;
 
-			Game::instance()->uiComboManager_1()->init(); //コンボUIの初期化
-			if (Game::gameMode == Scene::ONE_PLAY)
+			//-- 左から潰すとき --//
+			if (keyTrg_1 && checkBlockWidth(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], LEFT) && arrNo.x != 0)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1,NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0, 0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(445), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
+				UI::nowCombo_1++;  //コンボ加算
+				eraseBlockPerOneLoop++;
+
+				//スクリーンシェイク設定
+				shakeFrag = true;
+				shakeDirection = YOKO;
+
+				Game::instance()->uiComboManager_1()->init(); //コンボUIの初期化
+				if (Game::gameMode == Scene::ONE_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0, 0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(445), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
+				}
+				if (Game::gameMode == Scene::TWO_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(195), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
+					uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
+					uiCounter_2.calcFrag = true;
+				}
+				blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, LEFT);        //ブロック消去処理
+				uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1); //スコア計算処理
+
 			}
-			if (Game::gameMode == Scene::TWO_PLAY)
+			//右から潰すとき
+			if (keyTrg_1 && checkBlockWidth(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], RIGHT) && arrNo.x != BLOCK_WIDTH - 1)
 			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveL, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(195), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(左から)
-				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);	
-				uiCounter_2.calcFrag = true;
+				UI::nowCombo_1++;
+				eraseBlockPerOneLoop++;
+
+				//スクリーンシェイク設定
+				shakeFrag = true;
+				shakeDirection = YOKO;
+
+				Game::instance()->uiComboManager_1()->init();
+
+				if (Game::gameMode == Scene::ONE_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(509), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
+				}
+				if (Game::gameMode == Scene::TWO_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(262), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
+					uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
+					uiCounter_2.calcFrag = true;
+				}
+				blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, RIGHT);
+				uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1);
 			}
-			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, LEFT);        //ブロック消去処理
-			uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1); //スコア計算処理
+			//下から潰すとき
+			if (keyTrg_1 && checkBlockHeight(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], BOTTOM) && arrNo.y != BLOCK_HEIGHT - 1)
+			{
+				UI::nowCombo_1++;
+				eraseBlockPerOneLoop++;
+
+				//スクリーンシェイク設定
+				shakeFrag = true;
+				shakeDirection = TATE;
+
+				Game::instance()->uiComboManager_1()->init();
+
+				if (Game::gameMode == Scene::ONE_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 349), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
+				}
+				if (Game::gameMode == Scene::TWO_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 100), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
+					uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
+					uiCounter_2.calcFrag = true;
+				}
+				blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, BOTTOM);
+				uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1);
+			}
+			//上から潰すとき
+			if (keyTrg_1&& checkBlockHeight(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], UP) && arrNo.y != 0)
+			{
+				UI::nowCombo_1++;
+				eraseBlockPerOneLoop++;
+
+				//スクリーンシェイク設定
+				shakeFrag = true;
+				shakeDirection = TATE;
+
+				Game::instance()->uiComboManager_1()->init();
+
+				if (Game::gameMode == Scene::ONE_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 349), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
+				}
+				if (Game::gameMode == Scene::TWO_PLAY)
+				{
+					Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
+					Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 100), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
+					uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
+					uiCounter_2.calcFrag = true;
+				}
+				blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, UP);
+				uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1);
+			}
+			keyTrg_1 = false;
+
+			uiGauge_1.calcGauge(eraseBlockPerOneLoop, Scene::ONE_PLAY); //フィーバーゲージの増加
+
+			if (Game::gameMode == Scene::TWO_PLAY && uiCounter_2.calcFrag)
+			{
+				int counterArrNo_H = 0;	//カウンターブロックの配列格納用変数 (Height)
+
+				//-- カウンターブロックを情報を格納する配列の高さの部分を出す --//
+				for (int h = 0; h < COUNTER_MAX_H; h++)
+				{
+					if (uiCounter_2.counter[h][0].existFrag)	continue;	//存在しているとき(盤面にブロックがあるとき)は飛ばす
+					if (uiCounter_2.counter[h][0].moveFrag)		continue;	//動いているとき(下のブロックが消えて下に落下しているとき)は飛ばす
+					counterArrNo_H = h;
+					break;
+				}
+
+				bool center = false;
+				if (arrNo.x == BOARD_CENTER && arrNo.y == BOARD_CENTER)	center = true;
+				uiCounter_2.calcCounterBlockNum(&uiCounter_2, &uiCounter_1, SCREEN_WIDTH / 2 + 150, counterArrNo_H, center);
+			}
+
+			if (shakeFrag)
+			{
+				float maxVal = GetRand(20) + 20;
+
+				for (int h = 0; h < BLOCK_HEIGHT; h++)
+				{
+					for (int w = 0; w < BLOCK_WIDTH; w++)
+					{
+						block_1[h][w].shakeFrag = true;
+						block_1[h][w].maxVal	= maxVal;
+						block_1[h][w].direction = shakeDirection;
+					}
+				}
+			}
+
 		}
-		//右から潰すとき
-		if (keyTrg_1 && checkBlockWidth(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], RIGHT) && arrNo.x != BLOCK_WIDTH - 1)
+		else
 		{
-			UI::nowCombo_1++;
-			eraseBlockPerOneLoop++;
-
-			Game::instance()->uiComboManager_1()->init();
-
-			if (Game::gameMode == Scene::ONE_PLAY)
-			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(509), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
-			}
-			if (Game::gameMode == Scene::TWO_PLAY)
-			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveR, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>(262), static_cast<float>((CursorH::cursorCenterPos.y * 64) + 150) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", (CursorH::cursorCenterPos.y * 64) + 150);  //プレス(右から)
-				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
-				uiCounter_2.calcFrag = true;
-			}
-			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, RIGHT);
-			uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1);
+			keyTrg_1 = true;
 		}
-		//下から潰すとき
-		if (keyTrg_1 && checkBlockHeight(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], BOTTOM) && arrNo.y != BLOCK_HEIGHT - 1)
-		{
-			UI::nowCombo_1++;
-			eraseBlockPerOneLoop++;
-
-			Game::instance()->uiComboManager_1()->init();
-
-			if (Game::gameMode == Scene::ONE_PLAY)
-			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 349), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
-			}
-			if (Game::gameMode == Scene::TWO_PLAY)
-			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveB, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorH::cursorCenterPos.x * 64) + 100), static_cast<float>(312) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 312);  //プレス(下から)
-				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
-				uiCounter_2.calcFrag = true;
-			}
-			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, BOTTOM);
-			uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1);
-		}
-		//上から潰すとき
-		if (keyTrg_1&& checkBlockHeight(arrNo.x, arrNo.y, platform_1[arrNo.y][arrNo.x], UP) && arrNo.y != 0)
-		{
-			UI::nowCombo_1++;
-			eraseBlockPerOneLoop++;
-
-			Game::instance()->uiComboManager_1()->init();
-
-			if (Game::gameMode == Scene::ONE_PLAY)
-			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,0 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 349), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
-			}
-			if (Game::gameMode == Scene::TWO_PLAY)
-			{
-				Game::instance()->uiComboManager_1()->add(&uiCombo_1, NO_ANIMATION, &n_font::fontYomogi, FONT, Vector2F{ 0,40 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-				Game::instance()->pressMachineManager_1()->add(&pressMachineMoveT, NO_ANIMATION, n_texture::sprPressMachine, TEXTURE, Vector2F{ static_cast<float>((CursorW::cursorCenterPos.x * 64) + 100), static_cast<float>(244) }, Vector2F{ PRESS_SIZE_W,PRESS_SIZE_H }, "./Data/Images/pless_machine.png", 244);  //プレス(上から)
-				uiCounter_2.addCounterBlock(&uiCounter_2, eraseBlockCount);
-				uiCounter_2.calcFrag = true;
-			}
-			blockClip(arrNo.x, arrNo.y, &block_1[arrNo.y][arrNo.x].no, UP);
-			uiScore_1.score_1 += uiScore_1.calcScore(UI::nowCombo_1, eraseBlockCount, &UI::eraseBlockPow_1);
-		}
-		keyTrg_1 = false;
-
-		uiGauge_1.calcGauge(eraseBlockPerOneLoop, Scene::ONE_PLAY); //フィーバーゲージの増加
-
-		if (Game::gameMode == Scene::TWO_PLAY && uiCounter_2.calcFrag)
-		{
-			int counterArrNo_H = 0;	//カウンターブロックの配列格納用変数 (Height)
-
-			//-- カウンターブロックを情報を格納する配列の高さの部分を出す --//
-			for (int h = 0; h < COUNTER_MAX_H; h++)
-			{
-				if (uiCounter_2.counter[h][0].existFrag)	continue;	//存在しているとき(盤面にブロックがあるとき)は飛ばす
-				if (uiCounter_2.counter[h][0].moveFrag)		continue;	//動いているとき(下のブロックが消えて下に落下しているとき)は飛ばす
-				counterArrNo_H = h;
-				break;
-			}
-		
-			bool center = false;
-			if (arrNo.x == BOARD_CENTER && arrNo.y == BOARD_CENTER)	center = true;
-			uiCounter_2.calcCounterBlockNum(&uiCounter_2, SCREEN_WIDTH / 2 + 150, counterArrNo_H, center);
-		}
-	}
-	else
-	{
-		keyTrg_1 = true;
 	}
 }
 
-void Block_1::blockClip(const int width, const int height,int* checkNo, e_Direction direction)
+void Block_1::blockClip(const int width, const int height,int* checkNo, e_BlockDirection direction)
 {
 	//Xが入力されたら
 	if (direction == LEFT)
@@ -398,7 +450,7 @@ void Block_1::blockClip(const int width, const int height,int* checkNo, e_Direct
 
 //除去できるか判定 (横)  
 // Chipの横、Chipの縦、Chipの要素番号、向き
-bool Block_1::checkBlockWidth(const int width, const int height, const int checkNo, e_Direction direction)
+bool Block_1::checkBlockWidth(const int width, const int height, const int checkNo, e_BlockDirection direction)
 {
 	//例外チェック
 	if (direction == UP || direction == BOTTOM)
@@ -476,7 +528,7 @@ bool Block_1::checkBlockWidth(const int width, const int height, const int check
 
 //除去できるか判定 (縦)
 // Chipの横、Chipの縦、Chipの要素番号、向き
-bool Block_1::checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction)
+bool Block_1::checkBlockHeight(const int width, const int height, const int checkNo, e_BlockDirection direction)
 {
 	//例外チェック
 	if (direction == RIGHT || direction == LEFT)
@@ -698,7 +750,6 @@ void Block_2::update()
 		block_2[arrNo_2.y][arrNo_2.x].animeState = block_2[arrNo_2.y][arrNo_2.x].no;
 		block_2[saveArryNo_2.y][arrNo_2.x].animeState = block_2[saveArryNo_2.y][arrNo_2.x].no;
 	}
-
 }
 
 //--描画処理--//
@@ -743,7 +794,6 @@ void Block_2::draw()
 void Block_2::blockManage()
 {
 	uiCombo_2.setPlayerNo(Scene::TWO_PLAY); //現在のプレイヤー番号設定
-	uiScore_2.setPlayerNo(Scene::TWO_PLAY); //現在のプレイヤー番号設定
 	uiGauge_2.setPlayerNo(Scene::TWO_PLAY); //現在のプレイヤー番号設定
 	uiCounter_1.calcFrag = false;	//計算処理の初期化
 
@@ -767,7 +817,6 @@ void Block_2::blockManage()
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, LEFT);  //ブロック削除
-			uiScore_2.score_2 += uiScore_2.calcScore(UI::nowCombo_2, eraseBlockCount, &UI::eraseBlockPow_2);  //Score加算   
 		}
 		if (keyTrg_2 && checkBlockWidth(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], RIGHT) && arrNo_2.x != BLOCK_WIDTH - 1)
 		{
@@ -780,7 +829,6 @@ void Block_2::blockManage()
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, RIGHT);
-			uiScore_2.score_2 += uiScore_2.calcScore(UI::nowCombo_2, eraseBlockCount, &UI::eraseBlockPow_2);  //Score加算
 		}
 		if (keyTrg_2 && checkBlockHeight(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], BOTTOM) && arrNo_2.y != BLOCK_HEIGHT - 1)
 		{
@@ -793,7 +841,6 @@ void Block_2::blockManage()
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, BOTTOM);
-			uiScore_2.score_2 += uiScore_2.calcScore(UI::nowCombo_2, eraseBlockCount, &UI::eraseBlockPow_2);  //Score加算
 		}
 		if (keyTrg_2&& checkBlockHeight(arrNo_2.x, arrNo_2.y, platform_2[arrNo_2.y][arrNo_2.x], UP) && arrNo_2.y != 0)
 		{
@@ -806,7 +853,6 @@ void Block_2::blockManage()
 			uiCounter_1.addCounterBlock(&uiCounter_1, eraseBlockCount);
 			uiCounter_1.calcFrag = true;
 			blockClip(arrNo_2.x, arrNo_2.y, &block_2[arrNo_2.y][arrNo_2.x].no, UP);
-			uiScore_2.score_2 += uiScore_2.calcScore(UI::nowCombo_2, eraseBlockCount, &UI::eraseBlockPow_2);  //Score加算
 		}
 		keyTrg_2 = false;
 		uiGauge_2.calcGauge(eraseBlockPerOneLoop, Scene::TWO_PLAY); //フィーバーゲージの増加
@@ -826,7 +872,7 @@ void Block_2::blockManage()
 
 			bool center = false;
 			if (arrNo_2.x == BOARD_CENTER && arrNo_2.y == BOARD_CENTER)	center = true;
-			uiCounter_1.calcCounterBlockNum(&uiCounter_1, 150, counterArrNo_H, center);
+			uiCounter_1.calcCounterBlockNum(&uiCounter_1,&uiCounter_2, 150, counterArrNo_H, center);
 		}
 	}
 	else
@@ -834,7 +880,7 @@ void Block_2::blockManage()
 		keyTrg_2 = true;
 	}
 }
-void Block_2::blockClip(const int width, const int height, int* checkNo, e_Direction direction)
+void Block_2::blockClip(const int width, const int height, int* checkNo, e_BlockDirection direction)
 {
 	//Xが入力されたら
 	if (direction == LEFT)
@@ -943,7 +989,7 @@ void Block_2::blockClip(const int width, const int height, int* checkNo, e_Direc
 
 //除去できるか判定 (横)  
 // Chipの横、Chipの縦、Chipの要素番号、向き
-bool Block_2::checkBlockWidth(const int width, const int height, const int checkNo, e_Direction direction)
+bool Block_2::checkBlockWidth(const int width, const int height, const int checkNo, e_BlockDirection direction)
 {
 	//例外チェック
 	if (direction == UP || direction == BOTTOM)
@@ -1021,7 +1067,7 @@ bool Block_2::checkBlockWidth(const int width, const int height, const int check
 
 //除去できるか判定 (縦)
 // Chipの横、Chipの縦、Chipの要素番号、向き
-bool Block_2::checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction)
+bool Block_2::checkBlockHeight(const int width, const int height, const int checkNo, e_BlockDirection direction)
 {
 	//例外チェック
 	if (direction == RIGHT || direction == LEFT)

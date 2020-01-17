@@ -37,7 +37,7 @@ private:	//--メンバ変数--//
 	int			eraseBlockCount											= 0;		//消したブロックの個数
 	bool		keyTrg_1												= false;	//キートリガー	
 
-	enum e_Direction
+	enum e_BlockDirection
 	{
 		LEFT,
 		RIGHT,
@@ -57,9 +57,9 @@ public:		//--メンバ関数--//
 	
 	//-- ブロック処理 --//
 	void blockManage();																						//全体の管理
-	void blockClip(const int width, const int height,int* checkNo, e_Direction direction);					//除去処理
-	bool checkBlockWidth (const int width, const int height, const int checkNo, e_Direction direction);		//ブロックを除去できるか判定 (横)
-	bool checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction);		//ブロックを除去できるか判定 (縦)
+	void blockClip(const int width, const int height,int* checkNo, e_BlockDirection direction);					//除去処理
+	bool checkBlockWidth (const int width, const int height, const int checkNo, e_BlockDirection direction);		//ブロックを除去できるか判定 (横)
+	bool checkBlockHeight(const int width, const int height, const int checkNo, e_BlockDirection direction);		//ブロックを除去できるか判定 (縦)
 	void serchSet(OBJ2D* obj, Vector2F pos,const int no);														//BlokenBlockのデータ格納用
 
 	//-- 破壊ブロック処理 --//
@@ -86,7 +86,7 @@ private:	//--メンバ変数--//
 	int			eraseBlockCount											= 0;				//消したブロックの数
 	bool		keyTrg_2												= false;			//キートリガー	
 
-	enum e_Direction
+	enum e_BlockDirection
 	{
 		LEFT,
 		RIGHT,
@@ -106,9 +106,9 @@ public:		//--メンバ関数--//
 
 	//--ブロック処理--//
 	void blockManage();																						//全体の管理
-	void blockClip(const int width, const int height, int* checkNo, e_Direction direction);					//除去処理
-	bool checkBlockWidth(const int width, const int height, const int checkNo, e_Direction direction);		//ブロックを除去できるか判定 (横)
-	bool checkBlockHeight(const int width, const int height, const int checkNo, e_Direction direction);		//ブロックを除去できるか判定 (縦)
+	void blockClip(const int width, const int height, int* checkNo, e_BlockDirection direction);					//除去処理
+	bool checkBlockWidth(const int width, const int height, const int checkNo, e_BlockDirection direction);		//ブロックを除去できるか判定 (横)
+	bool checkBlockHeight(const int width, const int height, const int checkNo, e_BlockDirection direction);		//ブロックを除去できるか判定 (縦)
 	void serchSet(OBJ2D* obj, Vector2F pos, const int no);													//BlokenBlockのデータ格納用
 
 	//-- 破壊ブロック処理 --//

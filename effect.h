@@ -6,17 +6,46 @@
 #define PRESS_EFFECT_SIZE_W   (80)
 #define PRESS_EFFECT_SIZE_H   (192)
 
+#define COUNTER_EFFECT_CHIP_NUM (3)
+#define COUNTER_EFFECT_CHIP_W	(3)
+#define COUNTER_EFFECT_CHIP_H	(1)
+#define COUNTER_EFFECT_SIZE		(32)
+
 class Effect :public MoveAlg
 {
-	virtual void move(OBJ2D* obj) override {};
+	void move(OBJ2D* obj) override {};
 };
 
 class PressEffect :public Effect
 {
-	void move(OBJ2D* obj) override;
+public:
+	void moveR(OBJ2D* obj);
+	void moveT(OBJ2D* obj);
+	void moveL(OBJ2D* obj);
+	void moveB(OBJ2D* obj);
 };
 
-extern PressEffect pressEffect;
+class PressEffectMoveR :public PressEffect
+{
+	void move(OBJ2D* obj)override;
+};
+class PressEffectMoveT :public PressEffect
+{
+	void move(OBJ2D* obj)override;
+};
+class PressEffectMoveL :public PressEffect
+{
+	void move(OBJ2D* obj)override;
+};
+class PressEffectMoveB :public PressEffect
+{
+	void move(OBJ2D* obj)override;
+};
+
+extern PressEffectMoveR pressEffectMoveR;
+extern PressEffectMoveT pressEffectMoveT;
+extern PressEffectMoveL pressEffectMoveL;
+extern PressEffectMoveB pressEffectMoveB;
 
 class EraseEffect :public EraseAlg
 {

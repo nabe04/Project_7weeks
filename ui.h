@@ -18,27 +18,30 @@
 class UI :public MoveAlg
 {
 private:
-	int		 playerNo	= 0;		//操作しているプレイヤーの番号
-	bool	 feverFrag	= false;	//フィーバーフラグ(true : fever , false : Nomal)
-	Vector2F move		= {};		//UIの移動値
+	int		 playerNo = 0;		//操作しているプレイヤーの番号
+	Vector2F move = {};		//UIの移動値
 protected:
-	int addGauge		= 0;		//フィーバーゲージの増加量
-	int feverCount		= 0;		//フィーバー回数
-
+	int addGauge = 0;		//フィーバーゲージの増加量
+	int feverCount = 0;		//フィーバー回数
+	int colorState = 0;        //色の状態
+	int colorTimer = 0;        //点滅等、カラーに関するタイマー
 public:
 	//コンボ数
 	static int nowCombo_1;	//プレイヤー 1	
 	static int nowCombo_2;  //プレイヤー 2
 
-	//スコア
+							//スコア
 	static int score_1;		//プレイヤー 1	
 	static int score_2;		//プレイヤー 2
 
-	//ブロックの消した数の倍率
+							//ブロックの消した数の倍率
 	static float eraseBlockPow_1;
 	static float eraseBlockPow_2;
 
-public :
+	//フィーバーフラグ
+	static bool	 feverFrag;	//(true : fever , false : Nomal)
+
+public:
 
 	void moveTimer(OBJ2D* obj, Vector2F pos);
 	void moveCombo(OBJ2D* obj);
@@ -49,6 +52,9 @@ public :
 
 	void setPlayerNo(int no) { playerNo = no; }		//現在のプレイヤーの番号取得(これで今のプレイヤーが 1なのか2なのかを調べる)
 	int	 getPlayerNo() { return playerNo; }
+
+	//void setFeverFrag(bool frag) { feverFrag = frag; }		//現在のプレイヤーの番号取得(これで今のプレイヤーが 1なのか2なのかを調べる)
+	//bool getFeverFrag() { return feverFrag; }
 
 };
 
@@ -63,7 +69,7 @@ public:
 	//-- セッター --//
 	void setPosX(float pos) { this->pos.x = pos; }
 	void setPosY(float pos) { this->pos.y = pos; }
-	
+
 };
 
 class UiCombo :public UI
@@ -73,7 +79,7 @@ public:
 
 	//デストラクタ(メンバ変数の初期化)
 	~UiCombo()
-	{ 
+	{
 		nowCombo_1 = 0;
 		nowCombo_2 = 0;
 	};
@@ -84,16 +90,18 @@ class UiScore :public UI
 public:
 	void move(OBJ2D* obj) override;
 
-	int calcScore(const int combo, const int blockNum,float* eraseBlockPow);	//SCOREの計算　　(1: 現在のコンボ数 2: ブロックの消した個数)
+	int feverMgnfication = 1;//1なら通常時のスコア倍率、2ならフィーバー時のスコア倍率
 
-	//デストラクタ(メンバ変数の初期化)
+	int calcScore(const int combo, const int blockNum, float* eraseBlockPow);	//SCOREの計算　　(1: 現在のコンボ数 2: ブロックの消した個数)
+
+																				//デストラクタ(メンバ変数の初期化)
 	~UiScore();
 	/*~UiScore()
 	{
-		score_1					= 0;
-		score_2					= 0;
-		eraseBlockPow_1			= 0;
-		eraseBlockPow_2			= 0;
+	score_1					= 0;
+	score_2					= 0;
+	eraseBlockPow_1			= 0;
+	eraseBlockPow_2			= 0;
 	}*/
 };
 
@@ -102,7 +110,7 @@ class UiGauge :public UI
 public:
 	void move(OBJ2D* obj) override;
 
-	void calcGauge(const int eraseNum,const int playerNo);
+	void calcGauge(const int eraseNum, const int playerNo);
 };
 
 class UiHp :public UI
@@ -116,7 +124,6 @@ extern UiTimer uiTimer_2;
 extern UiCombo uiCombo_1;
 extern UiCombo uiCombo_2;
 extern UiScore uiScore_1;
-extern UiScore uiScore_2;
 extern UiGauge uiGauge_1;
 extern UiGauge uiGauge_2;
 
@@ -130,6 +137,7 @@ class UiManager :public OBJ2DManager
 {
 
 };
+
 
 
 class UiCounter
@@ -153,8 +161,9 @@ public:
 
 	void move(OBJ2D* obj);
 
-	void calcCounterBlockNum(UiCounter* counter ,int posX ,int height, bool center);		//カウンターブロックの個数計算 (1 : 何個消したか 2 : カーソルが真ん中にあるか)
-	void addCounterBlock(UiCounter* counter,const int blockNum);							//一度に消されたブロックの個数の追加(コンボ数じゃなくてブロックの数)
+	void calcCounterBlockNum(UiCounter* rivalCounter ,UiCounter* myCounter,int posX ,int height, bool center);		//カウンターブロックの個数計算 (1 : 何個消したか 2 : カーソルが真ん中にあるか)
+	void addCounterBlock(UiCounter* counter,const int blockNum);													//一度に消されたブロックの個数の追加(コンボ数じゃなくてブロックの数)
+	void deleteCounterBlock(OBJ2D* counter);
 	
 
 	//-- ゲッター --//

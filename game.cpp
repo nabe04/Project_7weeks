@@ -22,6 +22,7 @@
 #include "title.h"
 #include "game.h"
 #include "scene_result.h"
+#include "scene_tutorial.h"
 
 ////--namespace--////
 using namespace n_texture;
@@ -29,7 +30,9 @@ using namespace n_font;
 
 ////--変数--////
 Game Game::instance_;
+bool Game::replayFrag	= false;
 int  Game::gameMode;
+
 
 ////--初期化処理--////
 void Game::init()
@@ -48,7 +51,6 @@ void Game::init()
 	uiComboManager_1_		= new UiManager;
 	uiComboManager_2_		= new UiManager;
 	uiScoreManager_1_		= new UiManager;
-	uiScoreManager_2_		= new UiManager;
 	uiGaugeManager_1_		= new UiManager;
 	uiGaugeManager_2_		= new UiManager;
 	pressMachineManager_	= new PressMachineManager_1;
@@ -57,6 +59,7 @@ void Game::init()
 
 	isPausedFrag		= false;		//ポーズフラグの初期化
 	keyTrg				= false;		//キートリガーの初期化
+	replayFrag			= false;		//リプレイフラグの初期化
 
 	UI::nowCombo_1		= 0;			//staticメンバ変数の初期化
 	UI::nowCombo_2		= 0;
@@ -76,20 +79,24 @@ void Game::init()
 	fontYomogi = CreateFontToHandle("Nu よもぎもち 標準-丸1", 50, 3, DX_FONTTYPE_NORMAL);
 
 #endif // !DEBUG_TEX
-	LoadDivGraph(gh_block		,		 BLOCK_CHIP_NUM  ,	    BLOCK_CHIP_W   ,		  BLOCK_CHIP_H ,     	  BLOCK_CHIP_SIZE ,           BLOCK_CHIP_SIZE, sprBlock);
-	LoadDivGraph(gh_cursor_w	,						1,				      1,					  1,     		      CURSOR_W,          CURSOR_CHIP_SIZE, sprCursorW);
-	LoadDivGraph(gh_cursor_h	,						1,					  1,					  1,     	  CURSOR_CHIP_SIZE,                  CURSOR_H, sprCursorH);
-	LoadDivGraph(gh_my_block	,						1,					  1,					  1,     		   CURSOR_SIZE,			      CURSOR_SIZE, sprCursorC);
-	LoadDivGraph(gh_cursor		,		 CURSOR_CHIP_NUM ,	    CURSOR_CHIP_W  ,		  CURSOR_CHIP_H,     		   CURSOR_SIZE,               CURSOR_SIZE, sprCursor);
-	LoadDivGraph(gh_line		,						1,					  1,				      1,     	        LINE_WIDTH,               LINE_HEIGHT, sprLine);
-	LoadDivGraph(gh_frame		,						1,					  1,					  1,     	    	FRAME_SIZE,			       FRAME_SIZE, sprFrame);
-	LoadDivGraph(gh_gauge		,			  UI_CHIP_NUM,		      UI_CHIP_W,			  UI_CHIP_H,      	   UI_GAUGE_SIZE_W,		      UI_GAUGE_SIZE_H, sprGauge);
-	LoadDivGraph(gh_gauge_frame	,						1,					  1,					  1,     	   UI_GAUGE_SIZE_W,		      UI_GAUGE_SIZE_H, sprGaugeFrame);
-	LoadDivGraph(gh_back		,						1,					  1,					  1,     	 	   BACK_SIZE_W,	  		      BACK_SIZE_H, sprBG);
-	LoadDivGraph(gh_bloken_block,	BLOKEN_BLOCK_CHIP_NUM,	BLOKEN_BLOCK_CHIP_W,	BLOKEN_BLOCK_CHIP_H,         BLOKEN_BLOCK_SIZE,	        BLOKEN_BLOCK_SIZE, sprBlokenBLock);
-	LoadDivGraph(gh_press_machine,						1,					  1,				      1,     		  PRESS_SIZE_W,			     PRESS_SIZE_H, sprPressMachine);
-	LoadDivGraph(gh_press_effect,	PRESS_EFFECT_CHIP_NUM,	PRESS_EFFECT_CHIP_W,    PRESS_EFFECT_CHIP_H,       PRESS_EFFECT_SIZE_W,		  PRESS_EFFECT_SIZE_H, sprPressEffect);
-	LoadDivGraph(gh_counter_block, COUNTER_BLOCK_CHIP_NUM, COUNTER_BLOCK_CHIP_W,   COUNTER_BLOCK_CHIP_H, COUNTER_BLOCK_CHIP_SIZE_W, COUNTER_BLOCK_CHIP_SIZE_H, sprCounterBlock);
+	LoadDivGraph(gh_block		  ,		   BLOCK_CHIP_NUM  ,	    BLOCK_CHIP_W   ,		  BLOCK_CHIP_H ,     	  BLOCK_CHIP_SIZE ,           BLOCK_CHIP_SIZE, sprBlock);
+	LoadDivGraph(gh_cursor_w	  ,						  1,				      1,					  1,     		      CURSOR_W,          CURSOR_CHIP_SIZE, sprCursorW);
+	LoadDivGraph(gh_cursor_h	  ,						  1,					  1,					  1,     	  CURSOR_CHIP_SIZE,                  CURSOR_H, sprCursorH);
+	LoadDivGraph(gh_my_block	  ,						  1,					  1,					  1,     		   CURSOR_SIZE,			      CURSOR_SIZE, sprCursorC);
+	LoadDivGraph(gh_cursor		  ,		   CURSOR_CHIP_NUM ,	    CURSOR_CHIP_W  ,		  CURSOR_CHIP_H,     		   CURSOR_SIZE,               CURSOR_SIZE, sprCursor);
+	LoadDivGraph(gh_line		  ,						  1,					  1,				      1,     	        LINE_WIDTH,               LINE_HEIGHT, sprLine);
+	LoadDivGraph(gh_frame		  ,						  1,					  1,					  1,     	    	FRAME_SIZE,			       FRAME_SIZE, sprFrame);
+	LoadDivGraph(gh_gauge		  ,			    UI_CHIP_NUM,		      UI_CHIP_W,			  UI_CHIP_H,      	   UI_GAUGE_SIZE_W,		      UI_GAUGE_SIZE_H, sprGauge);
+	LoadDivGraph(gh_gauge_frame	  ,						  1,					  1,					  1,     	   UI_GAUGE_SIZE_W,		      UI_GAUGE_SIZE_H, sprGaugeFrame);
+	LoadDivGraph(gh_back		  ,						  1,					  1,					  1,     	 	   BACK_SIZE_W,	  		      BACK_SIZE_H, sprBG);
+	LoadDivGraph(gh_bloken_block  ,	  BLOKEN_BLOCK_CHIP_NUM,	BLOKEN_BLOCK_CHIP_W,	BLOKEN_BLOCK_CHIP_H,         BLOKEN_BLOCK_SIZE,	        BLOKEN_BLOCK_SIZE, sprBlokenBLock);
+	LoadDivGraph(gh_press_machine ,						  1,					  1,				      1,     		  PRESS_SIZE_W,			     PRESS_SIZE_H, sprPressMachine);
+	LoadDivGraph(gh_press_effect  ,	  PRESS_EFFECT_CHIP_NUM,	PRESS_EFFECT_CHIP_W,    PRESS_EFFECT_CHIP_H,       PRESS_EFFECT_SIZE_W,		  PRESS_EFFECT_SIZE_H, sprPressEffect);
+	LoadDivGraph(gh_counter_block , COUNTER_BLOCK_CHIP_NUM ,   COUNTER_BLOCK_CHIP_W,   COUNTER_BLOCK_CHIP_H, COUNTER_BLOCK_CHIP_SIZE_W, COUNTER_BLOCK_CHIP_SIZE_H, sprCounterBlock);
+	LoadDivGraph(gh_counter_effect, COUNTER_EFFECT_CHIP_NUM,  COUNTER_EFFECT_CHIP_W,  COUNTER_EFFECT_CHIP_H,       COUNTER_EFFECT_SIZE,       COUNTER_EFFECT_SIZE, sprCounterEffect);
+	LoadDivGraph(gh_arrow		  ,			 ARROW_CHIP_NUM,					  1,					  1,				ARROW_SIZE,				   ARROW_SIZE, sprArrow);
+	LoadDivGraph(gh_index_line	  ,		INDEX_LINE_CHIP_NUM,					  1,					  1,		 INDEX_LINE_SIZE_W,		    INDEX_LINE_SIZE_H, sprIndexLine);
+	LoadDivGraph(gh_index_cursor  ,	  INDEX_CURSOR_CHIP_NUM,					  1,					  1,		 INDEX_CURSOR_SIZE,			INDEX_CURSOR_SIZE, sprIndexCursor);
 }
 
 ////--更新処理--////
@@ -101,39 +108,6 @@ void Game::update()
 	//Pad入力処理
 	padInput = GetJoypadInputState(DX_INPUT_PAD1);
 
-	//ソフトリセット(START)
-	if (padInput & PAD_INPUT_R)
-	{
-		if (keyTrg)
-		{
-			keyTrg = false;
-			changeScene(Title::instance());   // タイトルシーンに切り替える
-			return;
-		}
-	}
-	//ポーズ処理(Back)
-	else if (key[KEY_INPUT_DOWN])
-	{
-		if (keyTrg)
-		{
-			keyTrg		  = false;
-			isPausedFrag != isPausedFrag;		//Backボタンが押されたらポーズ状態が反転
-		}
-	}
-	else if (padInput & PAD_INPUT_L)
-	{
-		if (keyTrg)
-		{
-			keyTrg = false;
-			changeScene(Result::instance());   // タイトルシーンに切り替える
-			return;
-		}
-	}
-	else
-	{
-		keyTrg = true;
-	}
-	if (isPausedFrag)  return;				//ポーズ中ならリターン
 
 	//-- 一人プレイ時 --//
 	if (getSelect() == ONE_PLAY)
@@ -180,11 +154,148 @@ void Game::update()
 			uiScoreManager_1()->add(&uiScore_1, NO_ANIMATION, &fontYomogi		, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
 			uiGaugeManager_1()->add(&uiGauge_1, UI_CHIP_W   ,n_texture::sprGauge, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
 
-			state++;	//初期化処理の終了
+			//Tutorial
+			tutorial.init();
+			
+			//-- 初期化処理の終了 --//
+			//ゲームをリプレイするならチュートリアルをとばす
+			if (replayFrag)
+			{
+				state = 2;	
+			}
+			else
+			{
+				state = 1;
+			}
 
 						/*fallthrough*/
 		case 1:
+			if (padInput & PAD_INPUT_RIGHT)
+			{
+				if (keyTrg)
+				{
+					keyTrg			= false;
+					tutorialFrag	= false;
+				}
+			}
+			else if (padInput & PAD_INPUT_LEFT)
+			{
+				if (keyTrg)
+				{
+					keyTrg			= false;
+					tutorialFrag	= true;
+				}
+			}
+			else if (padInput & PAD_INPUT_R)
+			{
+				if (keyTrg)
+				{
+					keyTrg = false;
+					if (tutorialFrag)
+					{
+						state = 2;
+
+						//BGマネージャの初期化
+						bgManager()->init();
+
+						//Blockマネージャの初期化
+						block1Manger()->init();
+
+						//Cursorマネージャの初期化
+						cursorManager()->init();
+
+						//UI
+						uiTimerManager_1()->init();
+						uiComboManager_1()->init();
+						uiScoreManager_1()->init();
+
+						//Press Machine
+						pressMachineManager_1()->init();
+
+						//Press Effect
+						pressEffectManager()->init();
+
+						//プレイヤー(自分で操作)を追加する (プレイヤー 1)
+						playerManager()->add(&player, NO_ANIMATION, n_texture::storePlayer, TEXTURE, Vector2F{ 0,0 }, Vector2F{ 64,64 });
+						cursorManager()->add(&cursorW, CURSOR_CHIP_W, n_texture::sprLine, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+						cursorManager()->add(&cursorH, CURSOR_CHIP_W, n_texture::sprLine, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ LINE_WIDTH,LINE_HEIGHT });
+						cursorManager()->add(&cursorCenter, CURSOR_CHIP_W, n_texture::sprCursorC, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+						cursorManager()->add(&cursorPivot, CURSOR_CHIP_W, n_texture::sprCursor, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ CURSOR_SIZE,CURSOR_SIZE });
+
+						//UI
+						uiTimerManager_1()->add(&uiTimer_1, NO_ANIMATION, &fontYomogi, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
+						uiScoreManager_1()->add(&uiScore_1, NO_ANIMATION, &fontYomogi, FONT, Vector2F{ -500,-500 }, Vector2F{ 64,64 });
+						uiGaugeManager_1()->add(&uiGauge_1, UI_CHIP_W, n_texture::sprGauge, TEXTURE, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
+					}
+					else
+					{
+						state = 3;
+					}
+				}
+			}
+			else
+			{
+				keyTrg = true;
+			}
+		
+			break;
+		case 2:
+			playerManager()->update();
+			bgManager()->update();
+			cursorManager()->update();
+			block1Manger()->update();
+			uiTimerManager_1()->update();
+			uiComboManager_1()->update();
+			uiScoreManager_1()->update();
+			uiGaugeManager_1()->update();
+			pressMachineManager_1()->update();
+			pressEffectManager()->update();
+			tutorial.update();
+			if (tutorial.getMoveFrag(&tutorial))
+			{
+				state = 3;
+
+				//Blockマネージャの初期化
+				block1Manger()->init();
+			}
+
+			break;
+		case 3:
 			/////通常時の処理/////
+			//ソフトリセット(START)
+			if (padInput & PAD_INPUT_R)
+			{
+				if (keyTrg)
+				{
+					keyTrg = false;
+					changeScene(Title::instance());   // タイトルシーンに切り替える
+					return;
+				}
+			}
+			//ポーズ処理(Back)
+			else if (key[KEY_INPUT_DOWN])
+			{
+				if (keyTrg)
+				{
+					keyTrg = false;
+					isPausedFrag != isPausedFrag;		//Backボタンが押されたらポーズ状態が反転
+				}
+			}
+			else if (padInput & PAD_INPUT_L)
+			{
+				if (keyTrg)
+				{
+					keyTrg = false;
+					changeScene(Result::instance());   // タイトルシーンに切り替える
+					return;
+				}
+			}
+			else
+			{
+				keyTrg = true;
+			}
+			if (isPausedFrag)  return;				//ポーズ中ならリターン
+
 
 			timer++;
 
@@ -198,6 +309,7 @@ void Game::update()
 			uiGaugeManager_1()->update();
 			pressMachineManager_1()->update();
 			pressEffectManager()->update();
+			
 
 	#ifdef USE_IMGUI
 			im_Ui.uiPlatform();
@@ -237,7 +349,6 @@ void Game::update()
 			uiComboManager_1()->init();
 			uiComboManager_2()->init();
 			uiScoreManager_1()->init();
-			uiScoreManager_2()->init();
 
 			uiCounter_1.init();
 			uiCounter_2.init();
@@ -270,7 +381,6 @@ void Game::update()
 			uiTimerManager_1()->add(&uiTimer_1	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiTimerManager_2()->add(&uiTimer_2	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiScoreManager_1()->add(&uiScore_1	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
-			uiScoreManager_2()->add(&uiScore_2	, NO_ANIMATION, &fontYomogi			, FONT		, Vector2F{ -500,-500 }, Vector2F{ 64,64 }, "Nu よもぎもち 標準-丸1");
 			uiGaugeManager_1()->add(&uiGauge_1	,    UI_CHIP_W,n_texture::sprGauge	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
 			uiGaugeManager_2()->add(&uiGauge_2	,    UI_CHIP_W,n_texture::sprGauge	, TEXTURE	, Vector2F{ -500,-500 }, Vector2F{ UI_GAUGE_SIZE_W,UI_GAUGE_SIZE_H });
 
@@ -291,7 +401,6 @@ void Game::update()
 			uiComboManager_1()->update();
 			uiComboManager_2()->update();
 			uiScoreManager_1()->update();
-			uiScoreManager_2()->update();
 			uiGaugeManager_1()->update();
 			uiGaugeManager_2()->update();
 			pressMachineManager_1()->update();
@@ -299,6 +408,11 @@ void Game::update()
 			pressEffectManager()->update();
 			uiCounter_1.update();
 			uiCounter_2.update();
+
+			if (replayFrag == false)
+			{
+				tutorial.update();
+			}
 
 			//要らん
 			//uiCounterManager_1()->update();			//Counter
@@ -344,7 +458,6 @@ void Game::draw()
 	uiComboManager_1()->draw();
 	if (gameMode == TWO_PLAY)	uiComboManager_2()->draw();
 	uiScoreManager_1()->draw();
-	if (gameMode == TWO_PLAY)   uiScoreManager_2()->draw();
 	uiGaugeManager_1()->draw();
 	if (gameMode == TWO_PLAY)   uiGaugeManager_2()->draw();
 	bgFrameManager_1()->draw(n_texture::sprGaugeFrame, &gaugeFrame_1.obj);
@@ -358,6 +471,11 @@ void Game::draw()
 		//要らん
 		/*uiCounterManager_1()->draw();
 		uiCounterManager_2()->draw();*/
+	}
+
+	if (replayFrag == false)
+	{
+		tutorial.draw();
 	}
 
 }
@@ -377,7 +495,6 @@ void Game::uninit()
 	safe_delete(uiComboManager_1_);
 	safe_delete(uiComboManager_2_);
 	safe_delete(uiScoreManager_1_);
-	safe_delete(uiScoreManager_2_);
 	safe_delete(uiGaugeManager_1_);
 	safe_delete(uiGaugeManager_2_);
 	safe_delete(pressMachineManager_);
@@ -387,7 +504,6 @@ void Game::uninit()
 	uiCombo_1.~UiCombo();
 	uiCombo_2.~UiCombo();
 	uiScore_1.~UiScore();
-	uiScore_2.~UiScore();
 
 	//グラフィックハンドルの削除
 	DeleteGraph(storePlayer[NO_ANIMATION]);
@@ -408,6 +524,9 @@ void Game::uninit()
 	DeleteGraph(sprPressMachine[NO_ANIMATION]);
 	DeleteGraph(sprPressEffect[PRESS_EFFECT_CHIP_NUM]);
 	DeleteGraph(sprCounterBlock[COUNTER_BLOCK_CHIP_NUM]);
+	DeleteGraph(sprArrow[NO_ANIMATION]);
+	DeleteGraph(sprIndexLine[NO_ANIMATION]);
+	DeleteGraph(sprIndexCursor[NO_ANIMATION]);
 
 	//フォントハンドルの削除
 	DeleteFontToHandle(fontYomogi);

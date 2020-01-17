@@ -20,6 +20,7 @@ private:
 	bool isPausedFrag	= false;	//ポーズ
 	bool keyTrg			= false;	//キートリガー
 	bool gameEndFrag	= false;	//ゲーム終了フラグ (true : 終了 , false : ゲーム中)
+	bool tutorialFrag	= false;	//Tutorialフラグ
 
 	//メンバ変数は後ろに_をつける
 	PlayerManager*			playerManager_			= nullptr;	//Player
@@ -34,11 +35,10 @@ private:
 	UiManager*				uiComboManager_1_		= nullptr;	//UI Combo(プレイヤー 1)
 	UiManager*				uiComboManager_2_		= nullptr;	//UI Combo(プレイヤー 2)
 	UiManager*				uiScoreManager_1_		= nullptr;	//UI Score(プレイヤー 1)
-	UiManager*				uiScoreManager_2_		= nullptr;  //UI Score(プレイヤー 2)
 	UiManager*				uiGaugeManager_1_		= nullptr;	//UI Gauge(プレイヤー 1)
 	UiManager*				uiGaugeManager_2_		= nullptr;	//UI Gauge(プレイヤー 2)
 	PressMachineManager_1*	pressMachineManager_	= nullptr;	//Press Machine
-	PressMachineManager_2* pressMachineManager_2_   = nullptr;  //Press Machine2
+	PressMachineManager_2*  pressMachineManager_2_  = nullptr;  //Press Machine2
 	EffectManager*			pressEffectManager_		= nullptr;	//Press Effect
 	
 
@@ -46,6 +46,7 @@ private:
 
 public:
 	static int  gameMode;		//プレイヤーの人数
+	static bool replayFrag;		//リプレイするか
 	static Game* instance() { return &instance_; }
 
 	void init()		override;
@@ -53,7 +54,13 @@ public:
 	void draw()		override;
 	void uninit()	override;
 
-	//ゲッターは後ろに_を付けない
+	//ゲッター(メンバ変数)
+	bool getTutorialFrag() { return tutorialFrag; }
+
+	//セッター(メンバ変数)
+	void setTutorialFrag(bool frag) { tutorialFrag = frag; }
+
+	//ゲッターは後ろに_を付けない(クラス)
 	PlayerManager*			playerManager()			{ return playerManager_; }
 	BG*						bgManager()				{ return bgManager_; }
 	BG*						bgFrameManager_1()		{ return bgFramaManger_1_; }
@@ -66,7 +73,6 @@ public:
 	UiManager*				uiComboManager_1()		{ return uiComboManager_1_; }
 	UiManager*				uiComboManager_2()		{ return uiComboManager_2_; }
 	UiManager*				uiScoreManager_1()		{ return uiScoreManager_1_; }
-	UiManager*				uiScoreManager_2()		{ return uiScoreManager_2_; }
 	UiManager*				uiGaugeManager_1()		{ return uiGaugeManager_1_; }
 	UiManager*				uiGaugeManager_2()		{ return uiGaugeManager_2_; }
 	PressMachineManager_1*	pressMachineManager_1()	{ return pressMachineManager_; }

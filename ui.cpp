@@ -11,19 +11,19 @@
 #include "load_texture.h"
 
 
-int		UI::nowCombo_1		= 0;
-int		UI::nowCombo_2		= 0;
-int		UI::score_1			= 0;
-int		UI::score_2			= 0;
+int		UI::nowCombo_1 = 0;
+int		UI::nowCombo_2 = 0;
+int		UI::score_1 = 0;
+int		UI::score_2 = 0;
 float	UI::eraseBlockPow_1 = 0;
 float	UI::eraseBlockPow_2 = 0;
+bool    UI::feverFrag = false;
 
 UiTimer uiTimer_1;
 UiTimer uiTimer_2;
 UiCombo uiCombo_1;
 UiCombo uiCombo_2;
 UiScore uiScore_1;
-UiScore uiScore_2;
 UiGauge uiGauge_1;
 UiGauge uiGauge_2;
 
@@ -31,47 +31,49 @@ UiCounter uiCounter_1;		//カウンター
 UiCounter uiCounter_2;
 
 //タイマー(UI)の制御
-void UI::moveTimer(OBJ2D* obj,Vector2F pos)
+void UI::moveTimer(OBJ2D* obj, Vector2F pos)
 {
 	int			dispTime;
 	const int	FPS = 60;
-
-	//位置
-	obj->pos = pos;
 
 	switch (obj->state)
 	{
 	case 0:
 		//--初期設定--//
-		obj->pos		= pos;
-		obj->timer		= n_general_function::setTimer(60);
-		obj->existFrag	= true;
-		obj->text		= "%.f";
-		obj->fontSize	= 22;
-		obj->fontThick	= 3;
-		obj->color		= { 0, 0, 0, 255 };
-		obj->loadData	= n_font::fh_yomogi;
+		obj->pos = obj->savePos;
+		obj->timer = n_general_function::setTimer(60);
+		obj->existFrag = true;
+		obj->text = "%.f";
+		obj->fontSize = 22;
+		obj->fontThick = 3;
+		obj->color = { 0, 0, 0, 255 };
+		colorState = 0;
+		colorTimer = 0;
+		obj->loadData = n_font::fh_yomogi;
 		obj->state++;
 		break;
 	case 1:
-		dispTime		= obj->timer / FPS;
-		obj->dispNum	= static_cast<float>(dispTime);
+
+		obj->savePos = pos;
+
+		dispTime = obj->timer / FPS;
+		obj->dispNum = static_cast<float>(dispTime);
 
 		if (Game::gameMode == Scene::ONE_PLAY)
 		{
-	#ifdef USE_IMGUI	//imgui使用時
+#ifdef USE_IMGUI	//imgui使用時
 			/*obj->pos.x   = SCREEN_WIDTH - 400 + im_Ui.im_uiTimer.fParam.x;
 			obj->pos.y   = 0 + im_Ui.im_uiTimer.fParam.y;*/
 			obj->color.r = static_cast<int>(im_Ui.im_uiTimer.iColor[0]);
 			obj->color.g = static_cast<int>(im_Ui.im_uiTimer.iColor[1]);
 			obj->color.b = static_cast<int>(im_Ui.im_uiTimer.iColor[2]);
 			obj->color.a = static_cast<int>(im_Ui.im_uiTimer.iColor[3]);
-	#endif  //USE_IMGUI
+#endif  //USE_IMGUI
 
-	#ifndef USE_IMGUI
+#ifndef USE_IMGUI
 			/*obj->pos.x   = SCREEN_WIDTH - 400;
 			obj->pos.y   = 0;*/
-	#endif //USE_IMGUI
+#endif //USE_IMGUI
 		}
 		if (Game::gameMode == Scene::TWO_PLAY)
 		{
@@ -79,7 +81,75 @@ void UI::moveTimer(OBJ2D* obj,Vector2F pos)
 			obj->pos.y   = 0;*/
 		}
 
-		obj->timer--;
+		int attention = n_general_function::setTimer(30);//注意
+
+		int warning = n_general_function::setTimer(10);//警告
+
+													   //タイマーが０に近づくごとに変化を起こす
+													   //終了10秒前
+		if (obj->timer < warning)
+		{
+			switch (colorState)
+			{
+			case 0:
+				colorTimer++;
+				obj->fontSize++;
+				obj->savePos.x -= 2;
+				obj->savePos.y -= 2;
+
+				obj->color = { 255,0,0,255 };
+				if (colorTimer > 10)
+				{
+					colorTimer = 0;
+					colorState = 1;
+				}
+				break;
+			case 1:
+				colorTimer++;
+				obj->fontSize--;
+				/* obj->savePos.x++;
+				obj->savePos.y++;*/
+				obj->color = { 0,0,0,255 };
+				if (colorTimer > 10)
+				{
+					colorTimer = 0;
+					colorState = 0;
+				}
+				break;
+			}
+			//タイマーが1桁の時の位置補正
+			obj->pos.x = obj->savePos.x + 8;
+			obj->pos.y = obj->savePos.y - 4;
+		}
+		//終了３０秒前
+		else if (obj->timer < attention)
+		{
+			//位置
+			obj->pos.x = obj->savePos.x;
+			obj->pos.y = obj->savePos.y - 4;
+			obj->color = { 255,0,0,255 };
+		}
+		else
+		{
+			//位置
+			obj->pos.x = obj->savePos.x;
+			obj->pos.y = obj->savePos.y - 4;
+			obj->color = { 0, 0, 0, 255 };
+		}
+
+		//通常時のみタイマーを減らし続ける
+		if (feverFrag == false)
+		{
+			obj->timer--;
+		}
+		//フィーバー中、または０秒になったらタイムを止める
+		else;
+
+		if (obj->timer <= 0)
+		{
+			obj->timer = 0;
+		}
+
 		break;
 	}
 }
@@ -89,11 +159,11 @@ void UI::moveCombo(OBJ2D* obj)
 	switch (obj->state)
 	{
 	case 0:
-		obj->text		= "Combo : %.f";
-		obj->existFrag	= true;
-		obj->color.a	= 255;
-		obj->fontSize	= 40;//文字の大きさ
-		obj->fontThick	= 3; //文字の厚さ
+		obj->text = "Combo : %.f";
+		obj->existFrag = true;
+		obj->color.a = 255;
+		obj->fontSize = 40;//文字の大きさ
+		obj->fontThick = 3; //文字の厚さ
 		if (Game::gameMode == Scene::ONE_PLAY) obj->pos = { 320,48 };
 		if (Game::gameMode == Scene::TWO_PLAY)
 		{
@@ -259,7 +329,7 @@ void UI::moveScore(OBJ2D* obj)
 				holdScore_1 = 1;
 			}
 
-			int calcScore = holdScore_1 / 5;
+			int calcScore = holdScore_1 / 50;
 
 			if (calcScore <= 0) calcScore = 1;
 
@@ -314,26 +384,26 @@ void UI::moveScore(OBJ2D* obj)
 				{
 					obj->dispNum = static_cast<float>(holdScore_2);  //プレイヤー 2
 				}
-		}
+			}
 			//操作しているプレイヤーのNo
 			if (playerNo == Scene::ONE_PLAY)
 			{
 #ifdef USE_IMGUI //imgui使用時
-				obj->pos.x		= 396 + im_Ui.im_uiScore_1.fParam.x;
-				obj->pos.y		= 122 + im_Ui.im_uiScore_1.fParam.y;
-				obj->color.r	= static_cast<int>(im_Ui.im_uiScore_1.iColor[0]);
-				obj->color.g	= static_cast<int>(im_Ui.im_uiScore_1.iColor[1]);
-				obj->color.b	= static_cast<int>(im_Ui.im_uiScore_1.iColor[2]);
-				obj->color.a	= static_cast<int>(im_Ui.im_uiScore_1.iColor[3]);
-				obj->fontSize	= 25 + static_cast<int>(im_Ui.im_uiScore_1.size);
-				obj->fontThick	= 8 + static_cast<int>(im_Ui.im_uiScore_1.thick);
+				obj->pos.x = 396 + im_Ui.im_uiScore_1.fParam.x;
+				obj->pos.y = 122 + im_Ui.im_uiScore_1.fParam.y;
+				obj->color.r = static_cast<int>(im_Ui.im_uiScore_1.iColor[0]);
+				obj->color.g = static_cast<int>(im_Ui.im_uiScore_1.iColor[1]);
+				obj->color.b = static_cast<int>(im_Ui.im_uiScore_1.iColor[2]);
+				obj->color.a = static_cast<int>(im_Ui.im_uiScore_1.iColor[3]);
+				obj->fontSize = 25 + static_cast<int>(im_Ui.im_uiScore_1.size);
+				obj->fontThick = 8 + static_cast<int>(im_Ui.im_uiScore_1.thick);
 #endif  //USE_IMGUI
 
 #ifndef USE_IMGUI
-				obj->pos.x		= 396;
-				obj->pos.y		= 122;
-				obj->fontSize	= 25;
-				obj->fontThick	= 8;
+				obj->pos.x = 396;
+				obj->pos.y = 122;
+				obj->fontSize = 25;
+				obj->fontThick = 8;
 #endif // !USE_IMGUI
 
 			}
@@ -341,13 +411,13 @@ void UI::moveScore(OBJ2D* obj)
 			if (playerNo == Scene::TWO_PLAY)
 			{
 #ifdef USE_IMGUI //imgui使用時
-				obj->pos.x		= 396 + im_Ui.im_uiScore_2.fParam.x;
-				obj->pos.y		= 360 + im_Ui.im_uiScore_2.fParam.y;
-				obj->color.r	= static_cast<int>(im_Ui.im_uiScore_2.iColor[0]);
-				obj->color.g	= static_cast<int>(im_Ui.im_uiScore_2.iColor[1]);
-				obj->color.b	= static_cast<int>(im_Ui.im_uiScore_2.iColor[2]);
-				obj->color.a	= static_cast<int>(im_Ui.im_uiScore_2.iColor[3]);
-				obj->fontSize	= 25 + static_cast<int>(im_Ui.im_uiScore_2.size);
+				obj->pos.x = 396 + im_Ui.im_uiScore_2.fParam.x;
+				obj->pos.y = 360 + im_Ui.im_uiScore_2.fParam.y;
+				obj->color.r = static_cast<int>(im_Ui.im_uiScore_2.iColor[0]);
+				obj->color.g = static_cast<int>(im_Ui.im_uiScore_2.iColor[1]);
+				obj->color.b = static_cast<int>(im_Ui.im_uiScore_2.iColor[2]);
+				obj->color.a = static_cast<int>(im_Ui.im_uiScore_2.iColor[3]);
+				obj->fontSize = 25 + static_cast<int>(im_Ui.im_uiScore_2.size);
 				obj->fontThick = 8 + static_cast<int>(im_Ui.im_uiScore_2.thick);
 #endif  //USE_IMGUI
 
@@ -358,9 +428,9 @@ void UI::moveScore(OBJ2D* obj)
 				obj->fontThick = 8;
 #endif // !USE_IMGUI
 			}
-	}
+		}
 		break;
-}
+	}
 }
 //add.end
 ////////////////////////////////////
@@ -396,17 +466,18 @@ void UI::moveGauge(OBJ2D* obj)
 			}
 		}
 
-		addGauge	= 0;
-		feverCount	= 0;
+		feverFrag = false;
+		addGauge = 0;
+		feverCount = 0;
 		adjustGauge = 0;
 
-		obj->timer		= 0;
+		obj->timer = 0;
 		obj->clipSize.x = 0;
 		obj->clipSize.y = 100;
 		obj->state++;
 	case 1:
 		//-- ゲージたまり中 --//
-
+		feverFrag = false;
 		obj->clipOrigin.x = 0;
 		obj->clipOrigin.y = 0;
 
@@ -427,15 +498,16 @@ void UI::moveGauge(OBJ2D* obj)
 		if (obj->clipSize.x > 320)
 		{
 			obj->clipSize.x = 320;
-			obj->timer		= 0;
-			addGauge		= 0;
+			obj->timer = 0;
+			addGauge = 0;
 			feverCount++;
 			obj->state++;
 		}
-		
+
 		break;
 	case 2:
 		//-- フィーバー中 --//
+		feverFrag = true;
 		addGauge = 0;
 		obj->animeState = 0;
 		obj->animeTimer = 0;
@@ -458,13 +530,22 @@ void UI::moveGauge(OBJ2D* obj)
 }
 
 //SCOREの計算　　(1: 現在のコンボ数 2: ブロックの消した個数 3: 現在の消す数倍率)
-int UiScore::calcScore(const int combo, const int blockNum,float* eraseBlockPow)
+int UiScore::calcScore(const int combo, const int blockNum, float* eraseBlockPow)
 {
 	float powCombo = 1 + (static_cast<float>(combo) / 10);	//コンボ数による倍率(前の1は等倍になるように)
 	if (blockNum == 3) *eraseBlockPow += 0.2f;
 	if (blockNum == 4) *eraseBlockPow += 0.5f;
 
-	float score = 100 * powCombo * (*eraseBlockPow);
+	if (feverFrag == true)
+	{
+		feverMgnfication = 2;
+	}
+	else
+	{
+		feverMgnfication = 1;
+	}
+
+	float score = 100 * powCombo * (*eraseBlockPow)*feverMgnfication;
 
 	return static_cast<int>(score);
 }
@@ -477,7 +558,7 @@ void UiGauge::calcGauge(const int eraseNum, const int playerNo)
 
 void UiTimer::move(OBJ2D* obj)
 {
-	moveTimer(obj,pos);
+	moveTimer(obj, pos);
 }
 
 void UiCombo::move(OBJ2D* obj)
@@ -498,13 +579,22 @@ void UiGauge::move(OBJ2D* obj)
 ////-- デストラクタ --////
 UiScore :: ~UiScore()
 {
-	if (score_1 != 0)	Result::resultScore_1 = score_1;
-	if (score_2 != 0)	Result::resultScore_2 = score_2;
-	
-	score_1					= 0;
-	score_2					= 0;
-	eraseBlockPow_1			= 0;
-	eraseBlockPow_2			= 0;
+	if (Game::gameMode == Scene::ONE_PLAY)
+	{
+		Result::resultScore_1 = 0;
+		Result::resultScore_1 = score_1;
+		score_1 = 0;
+	}
+	if (score_2 != 0)
+	{
+		Result::resultScore_2 = 0;
+		Result::resultScore_2 = score_2;
+	}
+
+
+	score_2 = 0;
+	eraseBlockPow_1 = 0;
+	eraseBlockPow_2 = 0;
 }
 
 void EraseUi::erase(OBJ2D* obj)
@@ -545,7 +635,7 @@ void UiCounter::update()
 				case 1:
 					if (h == 0)
 					{
-						counter[h][w].timer--;
+						//counter[h][w].timer--;
 
 						if (counter[h][w].timer < n_general_function::setTimer(7))  counter[h][w].animeTimer = 1;
 						if (counter[h][w].timer < n_general_function::setTimer(3))  counter[h][w].animeTimer = 2;
@@ -568,7 +658,7 @@ void UiCounter::update()
 			//-- 一列ブロックが消えると下に動く処理 --//
 			if (counter[h][w].moveFrag)
 			{
-				counter[h][w].gravity += 0.025f;
+				counter[h][w].gravity++;
 				counter[h][w].pos.y += counter[h][w].gravity;
 
 				//-- 一定のpos以上いけば止まる --//
@@ -666,28 +756,28 @@ void UiCounter::draw()
 	}
 }
 
-void UiCounter::calcCounterBlockNum(UiCounter* counter, int posX, int height, bool center)
+void UiCounter::calcCounterBlockNum(UiCounter* rivalCounter, UiCounter* myCounter, int posX, int height, bool center)
 {
 	//-- カーソル中央時 --//
 	if (center)
 	{
 		//-- 相手に送るブロックの個数指定 --//
-		switch (counter->breakBlock_2)
+		switch (rivalCounter->breakBlock_2)
 		{
 		case 1:
-			counter->arrNo_W = 1;
+			rivalCounter->arrNo_W = 1;
 			break;
 		case 2:
-			counter->arrNo_W = 3;
+			rivalCounter->arrNo_W = 3;
 			break;
 		case 3:
-			counter->arrNo_W = 4;
+			rivalCounter->arrNo_W = 4;
 			break;
 		case 4:
-			counter->arrNo_W = 5;
+			rivalCounter->arrNo_W = 5;
 			break;
 		}
-		counter->breakBlock_2 = 0;
+		rivalCounter->breakBlock_2 = 0;
 	}
 	else
 	{
@@ -696,20 +786,65 @@ void UiCounter::calcCounterBlockNum(UiCounter* counter, int posX, int height, bo
 		int num3 = 0;
 
 		//-- 生成するカウンターブロックの個数  (いくつのブロックを消したか * 生成するブロック数) --//
-		num1 = counter->breakBlock_2 * 1;
-		num2 = counter->breakBlock_3 * 2;
-		num3 = counter->breakBlock_4 * 3;
+		num1 = rivalCounter->breakBlock_2 * 1;
+		num2 = rivalCounter->breakBlock_3 * 2;
+		num3 = rivalCounter->breakBlock_4 * 3;
 
-		counter->arrNo_W = num1 + num2 + num3;
+		rivalCounter->arrNo_W = num1 + num2 + num3;
 
-		counter->breakBlock_2 = 0;
-		counter->breakBlock_3 = 0;
-		counter->breakBlock_4 = 0;
+		rivalCounter->breakBlock_2 = 0;
+		rivalCounter->breakBlock_3 = 0;
+		rivalCounter->breakBlock_4 = 0;
 	}
-
-	for (int w = 0; w < counter->arrNo_W; w++)
+	if (myCounter->counter[0][0].existFrag)
 	{
-		counter->counter[height][w].serchSet(&counter->counter[height][w], { static_cast<float>(posX + w * 32) ,static_cast<float>(-(height * COUNTER_BLOCK_SPACE) + 80) }, { COUNTER_BLOCK_CHIP_SIZE_W ,COUNTER_BLOCK_CHIP_SIZE_H }, w);
+		int beginArrNo = 0;
+
+		for (int w = COUNTER_MAX_W - 1; w >= 0; w--)
+		{
+			if (myCounter->counter[0][w].existFrag)
+			{
+				beginArrNo = w;
+				break;
+			}
+		}
+
+		int count = 0;
+
+		bool generateFrag = false;
+
+		for (int w = beginArrNo; w >= 0; w--)
+		{
+			if (w != 0)
+			{
+				myCounter->counter[0][w].existFrag = false;
+			}
+			else
+			{
+				myCounter->counter[0][w].state = 2;
+
+				generateFrag = true;
+			}
+			
+			count++;
+
+			if (count == rivalCounter->arrNo_W)  break;
+		}
+		if (generateFrag)
+		{
+			//全てのカウンターブロックを消したら消したブロックプラス１のブロックを相手に返す
+			for (int w = 0; w < myCounter->counter[0][0].maxVal + 1; w++)
+			{
+				rivalCounter->counter[height][w].serchSet(&rivalCounter->counter[height][w], { static_cast<float>(posX + w * 32) ,static_cast<float>(-(height * COUNTER_BLOCK_SPACE) + 80) }, { COUNTER_BLOCK_CHIP_SIZE_W ,COUNTER_BLOCK_CHIP_SIZE_H }, w, myCounter->counter[0][w].maxVal + 1);
+			}
+		}
+	}
+	else
+	{
+		for (int w = 0; w < rivalCounter->arrNo_W; w++)
+		{
+			rivalCounter->counter[height][w].serchSet(&rivalCounter->counter[height][w], { static_cast<float>(posX + w * 32) ,static_cast<float>(-(height * COUNTER_BLOCK_SPACE) + 80) }, { COUNTER_BLOCK_CHIP_SIZE_W ,COUNTER_BLOCK_CHIP_SIZE_H }, w, rivalCounter->arrNo_W);
+		}
 	}
 }
 
@@ -726,6 +861,21 @@ void UiCounter::addCounterBlock(UiCounter* counter,const int blockNum)
 	if (blockNum == 4)
 	{
 		counter->breakBlock_4++;
+	}
+}
+
+void UiCounter::deleteCounterBlock(OBJ2D* counter)
+{
+	switch (counter->state_2)
+	{
+	case 0:
+		//-- アニメーション処理など(未定) --//
+
+		counter->state_2++;
+		break;
+	case 1:
+		counter->existFrag = false;
+		break;
 	}
 }
 
